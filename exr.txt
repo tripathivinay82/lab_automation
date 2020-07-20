@@ -1,0 +1,289 @@
+system {
+    host-name exr02.chg;
+    ports {
+        console log-out-on-disconnect;
+    }
+    services {
+        extension-service {
+            request-response {
+                grpc {
+                    clear-text {
+                        address 10.49.167.133;
+                        port 50051;
+                    }
+                    skip-authentication;
+                }
+            }
+            traceoptions {
+                file jet.log size 100m;
+                flag all;
+            }
+        }
+        netconf {
+            ssh {
+                connection-limit 20;
+            }
+        }
+    }
+}
+chassis {
+    aggregated-devices {
+        ethernet {
+            device-count 256;
+        }
+    }
+    alarm {
+        management-ethernet {
+            link-down ignore;
+        }
+    }
+    network-services enhanced-ip;
+}
+interfaces {
+    ge-0/0/0 {
+        description INFRA:SP:Equinix:CCID:21082373;
+        flexible-vlan-tagging;
+        unit 29 {
+            description "to CE default instance";
+            vlan-tags outer 35 inner 1004;
+            family inet {
+                address 10.254.4.30/30;
+            }
+            family inet6 {
+                address ::10.254.4.30/64;
+            }
+        }
+    }
+    ge-0/0/1 {
+        description "to CE";
+    }
+    ge-0/0/3 {
+        description "to IXIA port 1/1";
+        vlan-tagging;
+        unit 1 {
+            vlan-id 1;
+            family inet {
+                address 102.1.0.1/24;
+            }
+        }
+        unit 2 {
+            vlan-id 2;
+            family inet {
+                address 102.1.1.1/24;
+            }
+        }
+    }
+    ge-0/0/4 {
+        description "to IER ge-0/0/0";
+        gigether-options {
+            802.3ad ae2;
+        }
+    }
+    ge-0/0/5 {
+        description "to IER ge-0/0/1";
+        gigether-options {
+            802.3ad ae1;
+        }
+    }
+    ae1 {
+        description chg-96e-2:ge-0/0/5;
+        mtu 8192;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family inet {
+                address 10.22.249.149/31;
+            }
+            family inet6 {
+                filter {
+                    group 3;
+                }
+                address 2603:10e1:101:65::6/126;
+            }
+        }
+    }
+    ae2 {
+        description chg-96e-2:ge-0/0/4;
+        mtu 8192;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family inet {
+                address 10.22.248.149/31;
+            }
+            family inet6 {
+                filter {
+                    group 3;
+                }
+                address 2603:10e1:101:66::6/126;
+            }
+        }
+    }
+    fti0 {
+        unit 48 {
+            description "MSEE to Azure vnet-PROD-TRANSIT-US link vnetId 3f88c6de-a9d9-4eb7-8bf2-221039396db5 vrfId 0113d921-7108-4d11-8320-eaa988f24ea0";
+            tunnel {
+                encapsulation vxlan-gpe {
+                    source {
+                        address 10.3.129.101;
+                    }
+                    destination {
+                        address 157.55.252.109;
+                    }
+                    tunnel-endpoint vxlan;
+                    destination-udp-port 65330;
+                    vni 992652;
+                }
+            }
+            family inet {
+                address 10.254.3.229/27;
+            }
+            family inet6;
+        }
+        unit 49 {
+            tunnel {
+                encapsulation vxlan-gpe {
+                    source {
+                        address 10.63.113.148;
+                    }
+                    destination {
+                        address 158.55.252.109;
+                    }
+                    tunnel-endpoint vxlan;
+                    destination-udp-port 65331;
+                    vni 992653;
+                }
+            }
+            family inet {
+                address 10.254.4.229/27;
+            }
+            family inet6;
+        }
+    }
+    lo0 {
+        unit 0 {
+            family inet {
+                address 104.44.217.229/32 {
+                    primary;
+                    preferred;
+                }
+                address 10.3.129.101/32;
+                address 10.63.113.148/32;
+                address 10.63.113.149/32;
+                address 10.63.113.150/32;
+            }
+            family inet6 {
+                address 2603:10e1:101:65::/128 {
+                    primary;
+                    preferred;
+                }
+                address 2603:10e1:101:65::1/128;
+                address 2603:10e1:101:65::c/128;
+                address 2603:10e1:101:65::d/128;
+                address 2603:10e1:101:65::e/128;
+                address abcd::20:0:0:1/128;
+                address abcd::20:0:0:3/128;
+            }
+        }
+    }
+}
+routing-options {
+    router-id 104.44.217.229;
+    forwarding-table {
+        export lb;
+    }
+    programmable-rpd {
+        purge-timeout never;
+    }
+}
+protocols {
+    ospf {
+        area 0.0.0.0 {
+            interface ae1.0;
+            interface lo0.0 {
+                passive;
+            }
+            interface ae2.0;
+        }
+    }
+    ospf3 {
+        area 0.0.0.0 {
+            interface lo0.0 {
+                passive;
+            }
+            interface ae1.0;
+            interface ae2.0;
+        }
+    }
+}
+policy-options {
+    policy-statement bgp-to-ospf {
+        term 1 {
+            from protocol bgp;
+            then accept;
+        }
+        term 2 {
+            from protocol static;
+            then accept;
+        }
+    }
+    policy-statement lb {
+        term lb {
+            then {
+                load-balance per-packet;
+            }
+        }
+    }
+    policy-statement to-fr-bgp {
+        term 2 {
+            from protocol ospf;
+            then accept;
+        }
+    }
+}
+routing-instances {
+    vpnA {
+        instance-type virtual-router;
+        interface ge-0/0/0.29;
+        interface fti0.48;
+        interface fti0.49;
+        routing-options {
+            static {
+                route 101.1.0.0/24 {
+                    next-hop [ 10.254.3.236 10.254.4.236 ];
+                    resolve;
+                    longest-match;
+                }
+            }
+            maximum-prefixes 5050 threshold 80;
+        }
+        protocols {
+            bgp {
+                group ebgp {
+                    export to-fr-bgp;
+                    local-as 200;
+                    neighbor 10.254.3.236 {
+                        peer-as 100;
+                    }
+                    neighbor 10.254.4.236 {
+                        peer-as 100;
+                    }
+                }
+            }
+            ospf {
+                export bgp-to-ospf;
+                area 0.0.0.0 {
+                    interface ge-0/0/0.29;
+                }
+            }
+        }
+    }
+}

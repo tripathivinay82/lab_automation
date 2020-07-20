@@ -1,0 +1,116 @@
+system {
+    host-name IER;
+    ports {
+        console log-out-on-disconnect;
+    }
+    services {
+        netconf {
+            ssh;
+        }
+    }
+}
+chassis {
+    aggregated-devices {
+        ethernet {
+            device-count 256;
+        }
+    }
+}
+interfaces {
+    ge-0/0/0 {
+        description "to EXR ge-0/0/4";
+        gigether-options {
+            802.3ad ae2;
+        }
+    }
+    ge-0/0/1 {
+        description "to EXR ge-0/0/5";
+        gigether-options {
+            802.3ad ae1;
+        }
+    }
+    ge-0/0/2 {
+        description "to DCGW ge-0/0/2.0";
+        unit 0 {
+            family inet {
+                address 10.200.1.1/24;
+            }
+            family inet6 {
+                address ::10.200.1.1/64;
+            }
+        }
+    }
+    ge-0/0/3 {
+        description "to DCGW ge-0/0/3.0";
+    }
+    ae1 {
+        description chg-96e-2:ge-0/0/3;
+        mtu 8192;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family inet {
+                address 10.22.249.148/31;
+            }
+            family inet6 {
+                address 2603:10e1:101:65::5/126;
+            }
+        }
+    }
+    ae2 {
+        description chg-96e-2:ge-0/0/3;
+        mtu 8192;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family inet {
+                address 10.22.248.148/31;
+            }
+            family inet6 {
+                address 2603:10e1:101:66::5/126;
+            }
+        }
+    }
+    lo0 {
+        unit 0 {
+            family inet {
+                address 131.1.1.1/32;
+            }
+        }
+    }
+}
+routing-options {
+    router-id 131.1.1.1;
+    autonomous-system 8075;
+}
+protocols {
+    ospf {
+        area 0.0.0.0 {
+            interface ae1.0;
+            interface lo0.0 {
+                passive;
+            }
+            interface ge-0/0/2.0;
+            interface ae2.0;
+        }
+    }
+    ospf3 {
+        area 0.0.0.0 {
+            interface ae1.0;
+            interface lo0.0 {
+                passive;
+            }
+            interface ge-0/0/2.0;
+            interface ae2.0;
+        }
+    }
+}
+

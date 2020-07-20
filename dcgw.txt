@@ -1,0 +1,211 @@
+system {
+    host-name DCGW;
+    ports {
+        console log-out-on-disconnect;
+    }
+    services {
+        extension-service {
+            request-response {
+                grpc {
+                    clear-text {
+                        address 10.49.167.142;
+                        port 50051;
+                    }
+                    skip-authentication;
+                }
+            }
+        }
+        netconf {
+            ssh;
+        }
+    }
+}
+chassis {
+    fpc 0 {
+        pic 0 {
+            tunnel-services {
+                bandwidth 10g;
+            }
+        }
+    }
+    network-services enhanced-ip;
+}
+interfaces {
+    ge-0/0/0 {
+        description "to Ubuntu";
+    }
+    ge-0/0/1 {
+        description "to IXIA port 1/2";
+    }
+    ge-0/0/2 {
+        description "to IER ge-0/0/2";
+        unit 0 {
+            family inet {
+                address 10.200.1.2/24;
+            }
+            family inet6 {
+                address ::10.200.1.2/64;
+            }
+        }
+    }
+    ge-0/0/3 {
+        description "to IER ge-0/0/3";
+    }
+    ge-0/0/4 {
+        description "to CE ge-0/0/0";
+        unit 0 {
+            family inet {
+                address 10.100.1.1/24;
+            }
+        }
+    }
+    ge-0/0/5 {
+        description "to CE ge-0/0/1";
+        unit 0 {
+            family inet {
+                address 11.100.1.1/24;
+            }
+        }
+    }
+    fti0 {
+        unit 48 {
+            tunnel {
+                encapsulation vxlan-gpe {
+                    source {
+                        address 157.55.252.109;
+                    }
+                    destination {
+                        address 10.3.129.101;
+                    }
+                    tunnel-endpoint vxlan;
+                    destination-udp-port 65330;
+                    vni 992652;
+                }
+            }
+            family inet {
+                address 10.254.3.236/27;
+            }
+            family inet6;
+        }
+        unit 49 {
+            tunnel {
+                encapsulation vxlan-gpe {
+                    source {
+                        address 158.55.252.109;
+                    }
+                    destination {
+                        address 10.63.113.148;
+                    }
+                    tunnel-endpoint vxlan;
+                    destination-udp-port 65331;
+                    vni 992653;
+                }
+            }
+            family inet {
+                address 10.254.4.236/27;
+            }
+            family inet6;
+        }
+    }
+    lo0 {
+        unit 0 {
+            family inet {
+                address 157.55.252.109/32;
+                address 158.55.252.109/32;
+            }
+            family inet6 {
+                address abcd::20:0:0:2/128;
+                address abcd::20:0:0:4/128;
+            }
+        }
+    }
+}
+routing-options {
+    router-id 157.55.252.109;
+    programmable-rpd {
+        purge-timeout never;
+    }
+}
+protocols {
+    ospf {
+        area 0.0.0.0 {
+            interface lo0.0 {
+                passive;
+            }
+            interface ge-0/0/2.0;
+        }
+    }
+    ospf3 {
+        area 0.0.0.0 {
+            interface lo0.0 {
+                passive;
+            }
+            interface ge-0/0/2.0;
+        }
+    }
+}
+policy-options {
+    policy-statement bgp-to-ospf {
+        term 1 {
+            from protocol bgp;
+            then accept;
+        }
+        term 2 {
+            from protocol static;
+            then accept;
+        }
+    }
+    policy-statement lb {
+        term lb {
+            then {
+                load-balance per-packet;
+            }
+        }
+    }
+    policy-statement to-fr-bgp {
+        term 2 {
+            from protocol ospf;
+            then accept;
+        }
+    }
+}
+routing-instances {
+    vpnA {
+        instance-type vrf;
+        interface ge-0/0/4.0;
+        interface ge-0/0/5.0;
+        interface fti0.48;
+        interface fti0.49;
+        route-distinguisher 100:1;
+        vrf-target target:100:1;
+        routing-options {
+            static {
+                route 100.1.0.0/24 {
+                    next-hop [ 10.254.3.229 10.254.4.229 ];
+                    resolve;
+                    longest-match;
+                }
+            }
+        }
+        protocols {
+            bgp {
+                group ebgp {
+                    export to-fr-bgp;
+                    local-as 100;
+                    neighbor 10.254.3.229 {
+                        peer-as 200;
+                    }
+                    neighbor 10.254.4.229 {
+                        peer-as 200;
+                    }
+                }
+            }
+            ospf {
+                export bgp-to-ospf;
+                area 0.0.0.0 {
+                    interface ge-0/0/4.0;
+                }
+            }
+        }
+    }
+}

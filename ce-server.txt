@@ -1,0 +1,68 @@
+system {
+    host-name CE-Server;
+    ports {
+        console log-out-on-disconnect;
+    }
+    services {
+        netconf {
+            ssh;
+        }
+    }
+}
+interfaces {
+    ge-0/0/0 {
+        description "to DCGW ge-0/0/4.0";
+        unit 0 {
+            family inet {
+                address 10.100.1.2/24;
+            }
+        }
+    }
+    ge-0/0/1 {
+        description "to DCGW ge-0/0/5.0";
+        unit 0 {
+            family inet {
+                address 11.100.1.2/24;
+            }
+        }
+    }
+    ge-0/0/2 {
+        description "to IXIA port 1/4";
+        vlan-tagging;
+        unit 1 {
+            vlan-id 1;
+            family inet {
+                address 101.1.0.1/24;
+            }
+        }
+        unit 2 {
+            vlan-id 2;
+            family inet {
+                address 101.1.1.1/24;
+            }
+        }
+    }
+    lo0 {
+        unit 0 {
+            family inet {
+                address 12.200.1.1/32;
+            }
+        }
+    }
+}
+protocols {
+    ospf {
+        area 0.0.0.0 {
+            interface ge-0/0/0.0;
+            interface lo0.0 {
+                passive;
+            }
+            interface ge-0/0/2.1 {
+                passive;
+            }
+            interface ge-0/0/2.2 {
+                passive;
+            }
+        }
+    }
+}
