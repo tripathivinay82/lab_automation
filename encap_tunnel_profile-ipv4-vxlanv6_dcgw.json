@@ -1,0 +1,145 @@
+{
+  "routes": [
+    {
+      "nexthop": {
+        "gateways": [
+          {
+            "flexibleTunnelProfile": {
+              "attributes": {
+                "vxlan": {
+                  "destinationAddress": {
+                    "inet6": {
+                      "addrString": "abcd::20:0:0:1"
+                    }
+                  }, 
+                  "sourceUdpPortRange": {
+                    "max": 65535, 
+                    "min": 49152
+                  }, 
+                  "sourcePrefix": {
+                    "inet6": {
+                      "addrString": "abcd::20:0:0:2"
+                    }
+                  }, 
+                  "flags": 8, 
+                  "vni": 992654, 
+                  "destinationUdpPort": 4791, 
+                  "sourcePrefixLen": 128 
+                }
+              }, 
+              "interfaceName": "fti0.48"
+           }
+          }
+        ]
+      }, 
+      "key": {
+        "destPrefixLen": 32, 
+        "table": {
+          "rttName": {
+            "name": "vpnA.inet.0"
+          }
+        }, 
+        "destPrefix": {
+          "inet": {
+            "addrString": "11.200.1.1"
+          }
+        }, 
+        "cookie": "1"
+      }
+    },
+    {
+      "nexthop": {
+        "gateways": [
+          {
+            "flexibleTunnelProfile": {
+              "attributes": {
+                "vxlan": {
+                  "destinationAddress": {
+                    "inet6": {
+                      "addrString": "abcd::20:0:0:3"
+                    }
+                  },
+                  "sourceUdpPortRange": {
+                    "max": 65535,
+                    "min": 49152
+                  },
+                  "sourcePrefix": {
+                    "inet6": {
+                      "addrString": "abcd::20:0:0:4"
+                    }
+                  },
+                  "flags": 8,
+                  "vni": 992655,
+                  "destinationUdpPort": 4792,
+                  "sourcePrefixLen": 128
+                }
+              },
+              "interfaceName": "fti0.48"
+           }
+          }
+        ]
+      },
+      "key": {
+        "destPrefixLen": 32,
+        "table": {
+          "rttName": {
+            "name": "vpnA.inet.0"
+          }
+        },
+        "destPrefix": {
+          "inet": {
+            "addrString": "11.200.1.2"
+          }
+        },
+        "cookie": "1"
+      }
+    },
+    {
+      "nexthop": {
+        "gateways": [
+          {
+            "flexibleTunnelProfile": {
+              "attributes": {
+                "vxlan": {
+                  "destinationAddress": {
+                    "inet6": {
+                      "addrString": "abcd::20:0:0:3"
+                    }
+                  },
+                  "sourceUdpPortRange": {
+                    "max": 65535,
+                    "min": 49152
+                  },
+                  "sourcePrefix": {
+                    "inet6": {
+                      "addrString": "abcd::20:0:0:4"
+                    }
+                  },
+                  "flags": 8,
+                  "vni": 992656,
+                  "destinationUdpPort": 4793,
+                  "sourcePrefixLen": 128
+                }
+              },
+              "interfaceName": "fti0.48"
+           }
+          }
+        ]
+      },
+      "key": {
+        "destPrefixLen": 32,
+        "table": {
+          "rttName": {
+            "name": "vpnA.inet.0"
+          }
+        },
+        "destPrefix": {
+          "inet": {
+            "addrString": "10.254.3.229"
+          }
+        },
+        "cookie": "1"
+      }
+    }
+ ]
+}

@@ -1,0 +1,94 @@
+{
+  "tunnel_profiles": [
+    {
+      "name": "ebgp_cust_rt_fti0_48_1",
+      "interface_name": "fti0.48",
+      "action": "DECAPSULATE",
+      "attributes": {
+        "vxlan": {
+          "destinationAddress": {
+            "inet6": {
+              "addrString": "abcd::20:0:0:1"
+            }
+          }, 
+          "sourceUdpPortRange": {
+            "max": 65535, 
+            "min": 49152
+          }, 
+          "sourcePrefix": {
+            "inet6": {
+              "addrString": "abcd::20:0:0:2"
+            }
+          }, 
+          "flags": 8, 
+          "vni": 992654,
+          "destinationUdpPort": 4791,
+          "destinationMac": {
+            "addrString": "1a:2b:3c:4d:5e:6f"
+          }, 
+          "sourcePrefixLen":128 
+        }
+      }
+    },
+    {
+      "name": "ebgp_cust_rt_fti0_48_2",
+      "interface_name": "fti0.48",
+      "action": "DECAPSULATE",
+      "attributes": {
+        "vxlan": {
+          "destinationAddress": {
+            "inet6": {
+              "addrString": "abcd::20:0:0:3"
+            }
+          },
+          "sourceUdpPortRange": {
+            "max": 65535,
+            "min": 49152
+          },
+          "sourcePrefix": {
+            "inet6": {
+              "addrString": "abcd::20:0:0:4"
+            }
+          },
+          "flags": 8,
+          "vni": 992655,
+          "destinationUdpPort": 4792,
+          "destinationMac": {
+            "addrString": "1a:2b:3c:4d:5e:6f"
+          },
+          "sourcePrefixLen":128
+        }
+      }
+    },
+    {
+      "name": "ebgp_cust_rt_fti0_48_3",
+      "interface_name": "fti0.48",
+      "action": "DECAPSULATE",
+      "attributes": {
+        "vxlan": {
+          "destinationAddress": {
+            "inet6": {
+              "addrString": "abcd::20:0:0:3"
+            }
+          },
+          "sourceUdpPortRange": {
+            "max": 65535,
+            "min": 49152
+          },
+          "sourcePrefix": {
+            "inet6": {
+              "addrString": "abcd::20:0:0:4"
+            }
+          },
+          "flags": 8,
+          "vni": 992656,
+          "destinationUdpPort": 4793,
+          "destinationMac": {
+            "addrString": "1a:2b:3c:4d:5e:6f"
+          },
+          "sourcePrefixLen":128
+        }
+      }
+    }
+   ]
+}

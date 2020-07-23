@@ -12,6 +12,9 @@ from jnpr.junos.utils.fs import FS
 from jnpr.junos.exception import *
 import multiprocessing
 import time
+import os 
+import subprocess
+
 NUM_PROCESSES = 1 
 
 def vmm_start_config():
@@ -212,6 +215,55 @@ def check_protocols(hostname):
 
     return True 
 
+def config_flex_route(hostname):
+    '''
+    This function will configure encap and decap profile for flex route on EXR and DCGW
+    '''
+    
+    print(f"Hostname: {hostname}")
+
+    username = 'regress'
+    password = 'MaRtInI'
+
+    try:
+        with Device(host=hostname, user=username, password=password, normalize=True) as dev:
+            dev.open()
+            retVal=dev.facts
+            if retVal['hostname'] == 'exr02.chg':
+                #cmd = 'python route_inject_p3.py -H ' + hostname + ' -P 50051 ' + ' -U ' + username + ' -W ' + password + ' -F encap_tunnel_profile-ipv4-vxlanv6_exr.json'
+                #retVal1 = os.system(cmd) 
+                #cmd = 'python decap_inject.py -H ' + hostname + ' -P 50051 ' + ' -U ' + username + ' -W ' + password + ' -F decap_tunnel_profile_v6_exr.json'
+                #retVal2 = os.system(cmd)
+                retVal1 = subprocess.run(["python", "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "encap_tunnel_profile-ipv4-vxlanv6_exr.json"], stdout=subprocess.DEVNULL, timeout=5)
+                retVal2 = subprocess.run(["python", "decap_inject.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "decap_tunnel_profile_v6_exr.json"], stdout=subprocess.DEVNULL, timeout=5)
+                if retVal1.returncode is not 0 or retVal2.returncode is not 0:
+                    print(f"Oops!!Subprocess returned unexpected value...retVal1: {retVal1.returncode}, retVal2:{retVal2.returncode}")
+                    return False
+            elif retVal['hostname'] == 'DCGW':
+                #cmd = 'python route_inject_p3.py -H ' + hostname + ' -P 50051 ' + ' -U ' + username + ' -W ' + password + ' -F encap_tunnel_profile-ipv4-vxlanv6_dcgw.json'
+                #retVal1 = os.system(cmd)
+                #cmd = 'python decap_inject.py -H ' + hostname + ' -P 50051 ' + ' -U ' + username + ' -W ' + password + ' -F decap_tunnel_profile_v6_dcgw.json'
+                #retVal2 = os.system(cmd)
+                retVal1 = subprocess.run(["python", "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "encap_tunnel_profile-ipv4-vxlanv6_dcgw.json"], stdout=subprocess.DEVNULL, timeout=5)
+                retVal2 = subprocess.run(["python", "decap_inject.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "decap_tunnel_profile_v6_dcgw.json"], stdout=subprocess.DEVNULL, timeout=5)
+                if retVal1.returncode is not 0 or retVal2.returncode is not 0:
+                    print(f"Oops!!Subprocess returned unexpected value...retVal1: {retVal1.returncode}, retVal2:{retVal2.returncode}")
+                    return False
+            else:
+                print("Oops! Incorrect Hostname..Please investigate..")
+    except ConnectRefusedError:
+        print("%s: Error - Device connection refused!" % hostname)
+        return False
+    except ConnectTimeoutError:
+        print("%s: Error - Device connection timed out!" % hostname)
+        return False
+    except ConnectAuthError:
+        print("%s: Error - Authentication failure!" % hostname)
+        return False
+
+    return True
+ 
+    
 def config_change(hostname):
     '''
     Modify the gRPC connection configuration
@@ -284,7 +336,6 @@ def main():
         return False
 
     #Verify Protocols Stateonfiguration 
-    router_dict={'r1_re0': '10.49.103.152', 'r2_re0': '10.49.103.15', 'r3_re0': '10.49.103.148', 'r4_re0': '10.49.101.64', 'r5_re0': '10.49.101.62'}
     time_start = time.time()
     with multiprocessing.Pool(processes=NUM_PROCESSES) as process_pool:
         retVal=process_pool.map(check_protocols, router_dict.values())
@@ -304,6 +355,12 @@ def main():
         print("Router Config Successful!!")
     else:
         print("Oops!!Router Config Failed..")
+
+    # Configure Flex Route from controller
+    if config_flex_route(router_dict['r2_re0']) and config_flex_route(router_dict['r4_re0']):
+        print("Flex Route programming Successful!!")
+    else:
+        print("Oops!!Flex Route programming failed!..")
 
 if __name__ == "__main__":
     main()    
