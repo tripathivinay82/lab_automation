@@ -27,25 +27,43 @@ def vmm_start_config():
     userPass = getpass.getpass() 
     vmmConfig = str(input("Please Enter The VMM Config File Location and Name: ")) or "/vmm/data/user_disks/vinayt/msft/exr/vmx.conf"
     vmmCmd = "vmm config " + vmmConfig + " -g vmm-default"
-    vmmCmd = 'vmm unbind' + ";" +  vmmCmd + ";" + 'vmm start'
-
-    # initialize the SSH client
-    client = paramiko.SSHClient()
-
-    # add to known hosts
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     
     try:
+        # initialize the SSH client
+        client = paramiko.SSHClient()
+        # add to known hosts
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        # Connect to server
         client.connect(hostname=hostname, username=userName, password=userPass)
     except:
         print("Cannot Connect to VMM Server")
         sys.exit()
 
     try: 
-        stdin, stdout, stderr = client.exec_command(vmmCmd)                                    
-        out = stdout.read().decode()
+        stdin, stdout, stderr = client.exec_command('vmm unbind')                                    
+        time.sleep(60)
+        out = stdout.read().decode().split("\n")
+        for line in out:
+            if re.search('Warning|error|Fatal',line):
+                print(f"Error During VMM Unbind Execution! Reason: {out}")
+                return False
+        stdin, stdout, stderr = client.exec_command(vmmCmd)
+        time.sleep(60)
+        out = stdout.read().decode().split("\n")
+        for line in out:
+            if re.search('error|Fatal|Warning',line):
+                print(f"Error During VMM Config Execution! Reason: {out}")
+                return False
+        stdin, stdout, stderr = client.exec_command('vmm start')
+        time.sleep(120)
+        out = stdout.read().decode().split("\n")
+        for line in out:
+            if re.search('error|Fatal|Warning',line):
+                print(f"Error During VMM Start! Reason: {out}")
+                return False
     except:
         print(out)
+        print(err)
         sys.exit()
     else:
         count = 1
@@ -72,7 +90,7 @@ def vmm_start_config():
 
             if 'no-response' in vm_status_all:
                 print("VMs are still coming up..lets wait..") 
-            elif 'no-response' not in vm_status_all:
+            elif 'no-response' not in vm_status_all and vm_status_all:
                 print("All VMs are alive")
                 client.close()
                 return router_dict            
@@ -84,8 +102,8 @@ def vmm_start_config():
             else:
                 print("Unintended Result..Please debug the script")
                 client.exec_command('vmm unbind')
-                return False
                 client.close()
+                return False
 
             time.sleep(60) 
             count += 1 
@@ -148,7 +166,6 @@ def check_protocols(hostname):
                 print(f"**** Checking Protocols for Device: {retVal['hostname']} ****")
                 rpc = dev.rpc.get_ospf_neighbor_information()
                 rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
-                xmlparser = jxmlease.Parser()
                 result = jxmlease.parse(rpc_xml)
                 print('Checking neighbor with IP address: ' + result['ospf-neighbor-information']['ospf-neighbor']['neighbor-address'])
                 print(result['ospf-neighbor-information']['ospf-neighbor']['interface-name'])
@@ -157,14 +174,12 @@ def check_protocols(hostname):
                 print(f"**** Checking Protocols for Device: {retVal['hostname']} ****")
                 rpc = dev.rpc.get_ospf_neighbor_information()
                 rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
-                xmlparser = jxmlease.Parser()
                 result = jxmlease.parse(rpc_xml)
                 print('Checking neighbor with IP address: ' + result['ospf-neighbor-information']['ospf-neighbor']['neighbor-address'])
                 print(result['ospf-neighbor-information']['ospf-neighbor']['interface-name'])
                 print(result['ospf-neighbor-information']['ospf-neighbor']['ospf-neighbor-state'])
                 rpc = dev.rpc.get_bgp_summary_information()
                 rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
-                xmlparser = jxmlease.Parser()
                 result = jxmlease.parse(rpc_xml)
                 for neighbor in result['bgp-information']['bgp-peer']:
                     print('Checking peer with IP address: ' + neighbor['peer-address'])
@@ -175,7 +190,6 @@ def check_protocols(hostname):
                 print(f"*** Checking Protocols for Device: {retVal['hostname']} ****")
                 rpc = dev.rpc.get_ospf_neighbor_information()
                 rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
-                xmlparser = jxmlease.Parser()
                 result = jxmlease.parse(rpc_xml)
                 for neighbor in result['ospf-neighbor-information']['ospf-neighbor']:
                     print('Checking neighbor with IP address: ' + neighbor['neighbor-address'])
@@ -183,7 +197,6 @@ def check_protocols(hostname):
                     print(neighbor['ospf-neighbor-state'])
                 rpc = dev.rpc.get_bgp_summary_information()
                 rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
-                xmlparser = jxmlease.Parser()
                 result = jxmlease.parse(rpc_xml)
                 for neighbor in result['bgp-information']['bgp-peer']:
                     print('Checking peer with IP address: ' + neighbor['peer-address'])
@@ -194,7 +207,6 @@ def check_protocols(hostname):
                 print(f"****Checking Protocols for Device: {retVal['hostname']}****")
                 rpc = dev.rpc.get_ospf_neighbor_information()
                 rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
-                xmlparser = jxmlease.Parser()
                 result = jxmlease.parse(rpc_xml)
                 for neighbor in result['ospf-neighbor-information']['ospf-neighbor']:
                     print('Checking neighbor with IP address: ' + neighbor['neighbor-address'])
@@ -230,20 +242,12 @@ def config_flex_route(hostname):
             dev.open()
             retVal=dev.facts
             if retVal['hostname'] == 'exr02.chg':
-                #cmd = 'python route_inject_p3.py -H ' + hostname + ' -P 50051 ' + ' -U ' + username + ' -W ' + password + ' -F encap_tunnel_profile-ipv4-vxlanv6_exr.json'
-                #retVal1 = os.system(cmd) 
-                #cmd = 'python decap_inject.py -H ' + hostname + ' -P 50051 ' + ' -U ' + username + ' -W ' + password + ' -F decap_tunnel_profile_v6_exr.json'
-                #retVal2 = os.system(cmd)
                 retVal1 = subprocess.run(["python", "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "encap_tunnel_profile-ipv4-vxlanv6_exr.json"], stdout=subprocess.DEVNULL, timeout=5)
                 retVal2 = subprocess.run(["python", "decap_inject.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "decap_tunnel_profile_v6_exr.json"], stdout=subprocess.DEVNULL, timeout=5)
                 if retVal1.returncode is not 0 or retVal2.returncode is not 0:
                     print(f"Oops!!Subprocess returned unexpected value...retVal1: {retVal1.returncode}, retVal2:{retVal2.returncode}")
                     return False
             elif retVal['hostname'] == 'DCGW':
-                #cmd = 'python route_inject_p3.py -H ' + hostname + ' -P 50051 ' + ' -U ' + username + ' -W ' + password + ' -F encap_tunnel_profile-ipv4-vxlanv6_dcgw.json'
-                #retVal1 = os.system(cmd)
-                #cmd = 'python decap_inject.py -H ' + hostname + ' -P 50051 ' + ' -U ' + username + ' -W ' + password + ' -F decap_tunnel_profile_v6_dcgw.json'
-                #retVal2 = os.system(cmd)
                 retVal1 = subprocess.run(["python", "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "encap_tunnel_profile-ipv4-vxlanv6_dcgw.json"], stdout=subprocess.DEVNULL, timeout=5)
                 retVal2 = subprocess.run(["python", "decap_inject.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "decap_tunnel_profile_v6_dcgw.json"], stdout=subprocess.DEVNULL, timeout=5)
                 if retVal1.returncode is not 0 or retVal2.returncode is not 0:
@@ -262,8 +266,90 @@ def config_flex_route(hostname):
         return False
 
     return True
+
+
+def ucast_flex_route_checker(hostname):
+    '''
+    This function will perform following tasks: 
+    1) check if route is a unicast flex route or not 
+    2) if flex route, check programming at RE and PFE 
+    '''
+
+
+def ulist_flex_route_checker(hostname,static_route,next_hops):
+    '''
+    This function will perform following tasks: 
+
+    1) check if route is a unlist pointing to flex route NH or not 
+    2) if NH are flex route, check programming of all NHs at RE and PFE 
+    '''
+
+    print(f"Hostname: {hostname}")
+
+    username = 'regress'
+    password = 'MaRtInI'
+
+    try:
+        with Device(host=hostname, user=username, password=password, normalize=True) as dev:
+            dev.open()
+            rpc=dev.rpc.get_config()
+            rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
+            result = jxmlease.parse(rpc_xml)
+            static_route = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['name']))
+            next_hops = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['next-hop']))
+            for route in static_route:
+                ulist_flex_route_checker(hostname,static_route,next_hops)
+
+    except ConnectRefusedError:
+        print("%s: Error - Device connection refused!" % hostname)
+        return False
+    except ConnectTimeoutError:
+        print("%s: Error - Device connection timed out!" % hostname)
+        return False
+    except ConnectAuthError:
+        print("%s: Error - Authentication failure!" % hostname)
+        return False
+
+    return True
+
+
+def flex_route_checker(hostname):
+    '''
+    This function will perform following tasks: 
+    1) Check if the route is unicast/unilist 
+    3) verify the route programming in RE and PFE
+    '''
  
-    
+    print(f"Hostname: {hostname}")
+
+    username = 'regress'
+    password = 'MaRtInI'
+
+    try:
+        with Device(host=hostname, user=username, password=password, normalize=True) as dev:
+            dev.open()
+            rpc=dev.rpc.get_config()
+            rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
+            result = jxmlease.parse(rpc_xml)
+            static_route = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['name'])) 
+            next_hops = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['next-hop']))
+            for route in static_route:
+                ulist_flex_route_checker(hostname,static_route,next_hops)
+                
+    except ConnectRefusedError:
+        print("%s: Error - Device connection refused!" % hostname)
+        return False
+    except ConnectTimeoutError:
+        print("%s: Error - Device connection timed out!" % hostname)
+        return False
+    except ConnectAuthError:
+        print("%s: Error - Authentication failure!" % hostname)
+        return False
+
+    return True    
+
+
+
 def config_change(hostname):
     '''
     Modify the gRPC connection configuration
@@ -279,7 +365,6 @@ def config_change(hostname):
             dev.open()
             rpc=dev.rpc.get_interface_information(interface_name='fxp0')
             rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
-            xmlparser = jxmlease.Parser()
             result = jxmlease.parse(rpc_xml)
             new_ip = result['interface-information']['physical-interface']['logical-interface']['address-family']['interface-address']['ifa-local']
             cmd='set system services extension-service request-response grpc clear-text address ' + str(new_ip)
@@ -305,22 +390,31 @@ def main():
     '''
 
     #Run and configure VMM
-    #router_dict=vmm_start_config()
-    #print(f"Router List: {router_dict}")
-    #print(f"Type of return value: {type(router_dict)}")
+    retVal = vmm_start_config()
+    print(f"Return Vale: {retVal}")
+    print(f"Return Vale Type: {type(retVal)}")
 
-    #if 'dict' in str(type(router_dict)).split(" ")[1]:
-    #    print("VMM Setup and Configuration Was Successful!!") 
-    #    print(f"List of VMM Routers: {router_dict}")
-    #else:
-    #    print("VMM Setup Failed")
-    #    return False
+    if retVal is False and isinstance(inp1, bool):
+        print(f"VMM Start Failed! Reason: {retVal}")
+        sys.exit()
+    elif isinstance(retVal, dict) and retVal:
+        router_dict = retVal
+        print(f"List of VMM Routers: {router_dict}")
+        print("VMM Setup and Configuration Was Successful!!")
+    elif retVal:
+        print(f"VMM Start Failed as Router List is Empty! Return Value: {retVal}")
+        sys.exit()
+    else:
+        print("VMM Start Failed Because of Unkown Reason! Return Value: {retVal}")
+        sys.exit()
 
     #Lets give VMs enough time to settle down
-    #time.sleep(300)
+    print("Lets Wait for 5 minutes for VMs to get stablize..")
+    time.sleep(300)
      
     #Verify Router State and configuration 
-    router_dict={'r1_re0': '10.49.103.152', 'r2_re0': '10.49.103.15', 'r3_re0': '10.49.103.148', 'r4_re0': '10.49.101.64', 'r5_re0': '10.49.101.62'}
+    # ROuter list for D24.11
+    #router_dict={'r1_re0': '10.49.103.152', 'r2_re0': '10.49.103.15', 'r3_re0': '10.49.103.148', 'r4_re0': '10.49.101.64', 'r5_re0': '10.49.101.62'}
     time_start = time.time()
     with multiprocessing.Pool(processes=NUM_PROCESSES) as process_pool: 
         retVal=process_pool.map(check_router, router_dict.values()) 
@@ -364,6 +458,4 @@ def main():
 
 if __name__ == "__main__":
     main()    
-
-
 
