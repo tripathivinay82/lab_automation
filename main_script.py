@@ -242,14 +242,14 @@ def config_flex_route(hostname):
             dev.open()
             retVal=dev.facts
             if retVal['hostname'] == 'exr02.chg':
-                retVal1 = subprocess.run(["python", "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "encap_tunnel_profile-ipv4-vxlanv6_exr.json"], stdout=subprocess.DEVNULL, timeout=5)
-                retVal2 = subprocess.run(["python", "decap_inject.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "decap_tunnel_profile_v6_exr.json"], stdout=subprocess.DEVNULL, timeout=5)
+                retVal1 = subprocess.run([sys.executable, "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "encap_tunnel_profile-ipv4-vxlanv6_exr.json"], stdout=subprocess.DEVNULL, timeout=5)
+                retVal2 = subprocess.run([sys.executable, "decap_inject.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "decap_tunnel_profile_v6_exr.json"], stdout=subprocess.DEVNULL, timeout=5)
                 if retVal1.returncode is not 0 or retVal2.returncode is not 0:
                     print(f"Oops!!Subprocess returned unexpected value...retVal1: {retVal1.returncode}, retVal2:{retVal2.returncode}")
                     return False
             elif retVal['hostname'] == 'DCGW':
-                retVal1 = subprocess.run(["python", "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "encap_tunnel_profile-ipv4-vxlanv6_dcgw.json"], stdout=subprocess.DEVNULL, timeout=5)
-                retVal2 = subprocess.run(["python", "decap_inject.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "decap_tunnel_profile_v6_dcgw.json"], stdout=subprocess.DEVNULL, timeout=5)
+                retVal1 = subprocess.run([sys.executable, "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "encap_tunnel_profile-ipv4-vxlanv6_dcgw.json"], stdout=subprocess.DEVNULL, timeout=5)
+                retVal2 = subprocess.run([sys.executable, "decap_inject.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "decap_tunnel_profile_v6_dcgw.json"], stdout=subprocess.DEVNULL, timeout=5)
                 if retVal1.returncode is not 0 or retVal2.returncode is not 0:
                     print(f"Oops!!Subprocess returned unexpected value...retVal1: {retVal1.returncode}, retVal2:{retVal2.returncode}")
                     return False
@@ -391,9 +391,7 @@ def ecmp_over_flex_route_checker(hostname):
         ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[27])
         ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[14])
         
-
     return True    
-
 
 
 def config_change(hostname):
@@ -434,7 +432,8 @@ def config_change(hostname):
 def main():
     '''
     This is the main function...More details to follow
-
+    '''
+    
     #Run and configure VMM
     retVal = vmm_start_config()
     print(f"Return Vale: {retVal}")
@@ -458,16 +457,16 @@ def main():
     print("Lets Wait for 5 minutes for VMs to get stablize..")
     time.sleep(300)
 
-'''
 
-    hostname='10.49.103.15'
-    ecmp_over_flex_route_checker(hostname)
-    print("********Funtcion completed**Sleeping now*********")
-    time.sleep(500)
+    #hostname='10.49.103.15'
+    #ecmp_over_flex_route_checker(hostname)
+    #print("********Funtcion completed**Sleeping now*********")
+    #time.sleep(500)
  
     #Verify Router State and configuration 
     # ROuter list for D24.11
     #router_dict={'r1_re0': '10.49.103.152', 'r2_re0': '10.49.103.15', 'r3_re0': '10.49.103.148', 'r4_re0': '10.49.101.64', 'r5_re0': '10.49.101.62'}
+    
     time_start = time.time()
     with multiprocessing.Pool(processes=NUM_PROCESSES) as process_pool: 
         retVal=process_pool.map(check_router, router_dict.values()) 
