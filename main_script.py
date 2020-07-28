@@ -255,6 +255,8 @@ def config_flex_route(hostname):
                     return False
             else:
                 print("Oops! Incorrect Hostname..Please investigate..")
+                dev.close()
+                return False
     except ConnectRefusedError:
         print("%s: Error - Device connection refused!" % hostname)
         return False
@@ -292,14 +294,6 @@ def ulist_flex_route_checker(hostname,static_route,next_hops):
     try:
         with Device(host=hostname, user=username, password=password, normalize=True) as dev:
             dev.open()
-            rpc=dev.rpc.get_config()
-            rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
-            result = jxmlease.parse(rpc_xml)
-            static_route = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['name']))
-            next_hops = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['next-hop']))
-            for route in static_route:
-                ulist_flex_route_checker(hostname,static_route,next_hops)
-
     except ConnectRefusedError:
         print("%s: Error - Device connection refused!" % hostname)
         return False
@@ -313,38 +307,90 @@ def ulist_flex_route_checker(hostname,static_route,next_hops):
     return True
 
 
-def flex_route_checker(hostname):
+def ecmp_over_flex_route_checker(hostname):
     '''
     This function will perform following tasks: 
     1) Check if the route is unicast/unilist 
     3) verify the route programming in RE and PFE
     '''
  
-    print(f"Hostname: {hostname}")
+    print(f"ecmp_over_flex_route_checker: Hostname: {hostname}")
 
     username = 'regress'
     password = 'MaRtInI'
 
-    try:
-        with Device(host=hostname, user=username, password=password, normalize=True) as dev:
-            dev.open()
-            rpc=dev.rpc.get_config()
-            rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
-            result = jxmlease.parse(rpc_xml)
-            static_route = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['name'])) 
-            next_hops = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['next-hop']))
-            for route in static_route:
-                ulist_flex_route_checker(hostname,static_route,next_hops)
-                
-    except ConnectRefusedError:
-        print("%s: Error - Device connection refused!" % hostname)
-        return False
-    except ConnectTimeoutError:
-        print("%s: Error - Device connection timed out!" % hostname)
-        return False
-    except ConnectAuthError:
-        print("%s: Error - Authentication failure!" % hostname)
-        return False
+    #try:
+    #    with Device(host=hostname, user=username, password=password, normalize=True) as dev:
+    #        dev.open()
+
+    #except ConnectRefusedError:
+    #    print("%s: Error - Device connection refused!" % hostname)
+    #    return False
+    #except ConnectTimeoutError:
+    #    print("%s: Error - Device connection timed out!" % hostname)
+    #    return False
+    #except ConnectAuthError:
+    #    print("%s: Error - Authentication failure!" % hostname)
+    #    return False
+
+    dev = Device(host=hostname, user=username, password=password, normalize=True)
+    dev.open()
+
+    rpc=dev.rpc.get_config()
+    rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
+    result = jxmlease.parse(rpc_xml)
+
+    static_route = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['name']))
+    next_hops = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['next-hop']))
+
+    # Collect data from indirect NH
+    rpc=dev.rpc.get_route_information(destination=static_route,table='vpnA.inet',extensive=True,active_path=True)
+    result=rpc.xpath(".//rt-entry/protocol-nh[nh-type]")
+    #Generate a dictionary with all the values
+    nested_dict = {}
+    for count,value in enumerate(result):
+        dict_count = {}
+        for cnt,val in enumerate(value):
+            dict_count[cnt] = val.text
+        #print(f"New Dict Created; Name and Value: {dict_count}") 
+        nested_dict[count] = dict_count
+             
+    print(f"Nested Dict {nested_dict}")
+    #Generate a new dict with key value as NH IP 
+    inh_dict = {}
+    nh_col = []
+    for key,value in nested_dict.items():
+        print(value)
+        nh_col.append(value[0])                                 # NH IP 
+        nh_col.append(value[1].split()[1])                      # Indirect NHID 
+        nh_col.append(value[3])                                 # NH Type
+        nh_col.append(value[4])                                 # Unicast NH ID
+        nh_col.append(value[6].split()[3])                     # RI Name
+        nh_col.append(value[6].split()[13])                    # FTI Name
+        inh_dict[value[0]] = nh_col                           # assign list as value of dict
+        nh_col = []                                             # Empty the list
+
+    print(inh_dict)        
+
+
+
+    # Collect data from unicast NH
+    ucast_dict = {} 
+    for ip in next_hops:
+        rpc=dev.rpc.get_route_information(destination=ip,table='vpnA.inet',extensive=True,active_path=True)
+        ucast_dict[ip] = [rpc.xpath(".//table-name")[0].text]
+        ucast_dict[ip].append(rpc.xpath(".//rt-destination")[0].text)
+        ucast_dict[ip].append(rpc.xpath(".//nh-index")[0].text)
+        ucast_dict[ip].append(rpc.xpath(".//via")[0].text)
+        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[0])
+        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[6])
+        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[8])
+        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[9])
+        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[11])
+        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[23])
+        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[27])
+        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[14])
+        
 
     return True    
 
@@ -372,6 +418,7 @@ def config_change(hostname):
                 cu.load(cmd, format='set')
                 cu.pdiff()
                 cu.commit()
+            dev.close()
     except ConnectRefusedError:
         print("%s: Error - Device connection refused!" % hostname)
         return False
@@ -387,7 +434,6 @@ def config_change(hostname):
 def main():
     '''
     This is the main function...More details to follow
-    '''
 
     #Run and configure VMM
     retVal = vmm_start_config()
@@ -411,7 +457,14 @@ def main():
     #Lets give VMs enough time to settle down
     print("Lets Wait for 5 minutes for VMs to get stablize..")
     time.sleep(300)
-     
+
+'''
+
+    hostname='10.49.103.15'
+    ecmp_over_flex_route_checker(hostname)
+    print("********Funtcion completed**Sleeping now*********")
+    time.sleep(500)
+ 
     #Verify Router State and configuration 
     # ROuter list for D24.11
     #router_dict={'r1_re0': '10.49.103.152', 'r2_re0': '10.49.103.15', 'r3_re0': '10.49.103.148', 'r4_re0': '10.49.101.64', 'r5_re0': '10.49.101.62'}
