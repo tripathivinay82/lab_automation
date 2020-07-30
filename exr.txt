@@ -386,6 +386,7 @@ firewall {
                 then {
                     count ipv6_sample;
                     sample;
+                    accept;
                 }
             }
         }
