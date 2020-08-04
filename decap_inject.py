@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # Copyright (c) 2018 Juniper Networks, Inc.
 # All rights reserved.
@@ -44,73 +44,69 @@ parser.add_option('-F', '--file', action="store", dest="FILE",
                   help="JSON input file", default="config.json")
 (options, args) = parser.parse_args()
 if os.path.isfile(options.FILE) == False:
-        print "ERROR: Input file %s does not exist" % options.FILE
+        print(f"ERROR: Input file {options.FILE} does not exist") 
         sys.exit(1)
 
 def show_sample():
     this_req = ft_svc.FlexibleTunnelDeleteRequest()
     this_req.tunnel_profile_names.append("foo")
     this_req.tunnel_profile_names.append("bar")
-    print 'PROTO:'
-    print this_req
-    print 'JSON:'
-    print jsonf.MessageToJson(this_req)
+    print('PROTO:')
+    print(this_req)
+    print('JSON:')
+    print(jsonf.MessageToJson(this_req))
 
 def add_profiles(ft, ft_req):
     if options.OPER == 'add':
-            print 'Adding tunnels....'
+            print('Adding tunnels....')
     else:
-            print 'Updating tunnels....'
+            print('Updating tunnels....')
     i = 0
     routes_added = 0
     routes_processed = 0
     start_time = time.time()
     while len(ft_req.tunnel_profiles):
         if options.OPER == 'add':
-                this_req = ft_svc.FlexibleTunnelAddRequest(
-                        tunnel_profiles=ft_req.tunnel_profiles[:BATCH_SIZE])
-                opRes = ft.FlexibleTunnelAdd(this_req, TIMEOUT)
+            this_req = ft_svc.FlexibleTunnelAddRequest(
+            tunnel_profiles=ft_req.tunnel_profiles[:BATCH_SIZE])
+            opRes = ft.FlexibleTunnelAdd(this_req, TIMEOUT)
         else:
-                this_req = ft_svc.FlexibleTunnelUpdateRequest(
-                        tunnel_profiles=ft_req.tunnel_profiles[:BATCH_SIZE])
-                opRes = ft.FlexibleTunnelUpdate(this_req, TIMEOUT)
-        #print this_req
-        #print opRes
-	if opRes.code:
-		print 'Batch %d: tunnels added/updated = %d, result = %d'% (
-			i, opRes.operations_completed, opRes.code)
+            this_req = ft_svc.FlexibleTunnelUpdateRequest(
+            tunnel_profiles=ft_req.tunnel_profiles[:BATCH_SIZE])
+            opRes = ft.FlexibleTunnelUpdate(this_req, TIMEOUT)
+        if opRes.code:
+            print('Batch %d: tunnels added/updated = %d, result = %d'% (
+		i, opRes.operations_completed, opRes.code))
         if opRes.sub_code:
-                print 'Error %d: %s' % (opRes.sub_code, opRes.message)
+            print('Error %d: %s' % (opRes.sub_code, opRes.message))
         routes_added += opRes.operations_completed
         routes_processed += len(ft_req.tunnel_profiles[:BATCH_SIZE])
         i += 1
         del ft_req.tunnel_profiles[:BATCH_SIZE]
     end_time = time.time()
-    print 'DONE: total of', routes_processed, 'tunnels processed', routes_added, 'tunnels added/updated'
-    print 'Elapsed time: %.2f secs' % (end_time - start_time)
+    print('DONE: total of', routes_processed, 'tunnels processed', routes_added, 'tunnels added/updated')
+    print('Elapsed time: %.2f secs' % (end_time - start_time))
     #raw_input("Press the <ENTER> key to disconnect...")
    
 def del_profiles(ft, ft_req):
-    print 'Deleting tunnels....'
+    print('Deleting tunnels....')
     i = 0
     routes_deleted = 0
     routes_processed = 0
     while len(ft_req.tunnel_profile_names):
-        this_req = ft_svc.FlexibleTunnelDeleteRequest(
-            tunnel_profile_names=ft_req.tunnel_profile_names[:BATCH_SIZE])
-        #print this_req
+        this_req = ft_svc.FlexibleTunnelDeleteRequest(tunnel_profile_names=ft_req.tunnel_profile_names[:BATCH_SIZE])
         opRes = ft.FlexibleTunnelDelete(this_req, TIMEOUT)
-        #print opRes
-	if opRes.code:
-		print 'Batch %d: tunnels added = %d, result = %d'% (
-			i, opRes.operations_completed, opRes.code)
+
+        if opRes.code:
+            print('Batch %d: tunnels added = %d, result = %d'% (i, opRes.operations_completed, opRes.code))
         if opRes.sub_code:
-                print 'Error %d: %s' % (opRes.sub_code, opRes.message)
+            print('Error %d: %s' % (opRes.sub_code, opRes.message))
         routes_deleted += opRes.operations_completed
         routes_processed += len(ft_req.tunnel_profile_names[:BATCH_SIZE])
         i += 1
         del ft_req.tunnel_profile_names[:BATCH_SIZE]
-    print 'DONE: total of', routes_processed, 'tunnels processed', routes_deleted, 'tunnels deleted'
+
+    print('DONE: total of', routes_processed, 'tunnels processed', routes_deleted, 'tunnels deleted')
     #raw_input("Press the <ENTER> key to disconnect...")
    
 def Main():
@@ -119,37 +115,37 @@ def Main():
     conn = grpc.insecure_channel('%s:%d' % (options.HOST, int(options.PORT)))
     auth_stub = authentication_service_pb2_grpc.LoginStub(conn)
     login = auth_stub.LoginCheck(
-            auth_svc.LoginRequest(user_name=options.USER,
-                                  password=options.PASSWORD,
-                                  client_id=options.CLIENT_ID), 
-            TIMEOUT)
+        auth_svc.LoginRequest(user_name=options.USER,
+                                password=options.PASSWORD,
+                                client_id=options.CLIENT_ID), 
+                                TIMEOUT)
     if login:
-        print "Successfully connected to server %s:%s as %s" % (
-            options.HOST, options.PORT, options.USER)
+        print(("Successfully connected to server %s:%s as %s" % (
+                options.HOST, options.PORT, options.USER)))
     else:
-        print "ERROR: Login to server server %s:%s as %s FAILED" % (
-            options.HOST, options.PORT, options.USER)
+        print(("ERROR: Login to server server %s:%s as %s FAILED" % (
+                options.HOST, options.PORT, options.USER)))
         sys.exit(1)
 
     # Create the RIB service stub
     ft = flexible_tunnel_service_pb2_grpc.FlexibleTunnelStub(conn)
 
     # Read routes
-    print 'Reading JSON input file...'
+    print('Reading JSON input file...')
     f = open(options.FILE, "rb")
 
     # Do stuff
     if options.OPER == 'add':
-            ft_req = jsonf.Parse(f.read(), ft_svc.FlexibleTunnelAddRequest())
-            add_profiles(ft, ft_req)
+        ft_req = jsonf.Parse(f.read(), ft_svc.FlexibleTunnelAddRequest())
+        add_profiles(ft, ft_req)
     elif options.OPER == 'upd':
-            ft_req = jsonf.Parse(f.read(), ft_svc.FlexibleTunnelUpdateRequest())
-            add_profiles(ft, ft_req)
+        ft_req = jsonf.Parse(f.read(), ft_svc.FlexibleTunnelUpdateRequest())
+        add_profiles(ft, ft_req)
     elif options.OPER == 'del':
-            ft_req = jsonf.Parse(f.read(), ft_svc.FlexibleTunnelDeleteRequest())
-            del_profiles(ft, ft_req)
+        ft_req = jsonf.Parse(f.read(), ft_svc.FlexibleTunnelDeleteRequest())
+        del_profiles(ft, ft_req)
     elif options.OPER == 'sample':
-            show_sample()
+        show_sample()
 
 if __name__ == '__main__':
     Main()

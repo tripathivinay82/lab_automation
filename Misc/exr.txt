@@ -20,9 +20,7 @@ system {
             }
         }
         netconf {
-            ssh {
-                connection-limit 20;
-            }
+            ssh; 
         }
     }
 }
@@ -32,6 +30,12 @@ chassis {
             device-count 256;
         }
     }
+    fpc 0 {
+        sampling-instance ipfix_instance;
+        inline-services {
+            flex-flow-sizing;
+        }
+    }
     alarm {
         management-ethernet {
             link-down ignore;
@@ -39,17 +43,68 @@ chassis {
     }
     network-services enhanced-ip;
 }
+services {
+    flow-monitoring {
+        version-ipfix {
+            template ipv4_template {
+                flow-active-timeout 60;
+                flow-inactive-timeout 15;
+                nexthop-learning {
+                    enable;
+                }
+                template-refresh-rate {
+                    packets 1000;
+                    seconds 10;
+                }
+                option-refresh-rate {
+                    packets 1000;
+                    seconds 10;
+                }
+                ipv4-template;
+            }
+            template ipv6_template {
+                flow-active-timeout 60;
+                flow-inactive-timeout 15;
+                nexthop-learning {
+                    enable;
+                }
+                template-refresh-rate {
+                    packets 1000;
+                    seconds 10;
+                }
+                option-refresh-rate {
+                    packets 1000;
+                    seconds 10;         
+                }
+                ipv6-template;
+            }
+        }
+    }
+}
 interfaces {
     ge-0/0/0 {
         description INFRA:SP:Equinix:CCID:21082373;
         flexible-vlan-tagging;
         unit 29 {
+            forwarding-class-accounting {
+                enhanced {
+                    direction both;
+                }
+            }
             description "to CE default instance";
             vlan-tags outer 35 inner 1004;
             family inet {
+                filter {
+                    input-chain [ ipfix accept-all-v4 ];
+                    output-chain [ ipfix accept-all-v4 ];
+                }
                 address 10.254.4.30/30;
             }
             family inet6 {
+                filter {
+                    input-chain [ ipv6-ipfix accept-all-v6 ];
+                    output-chain [ accept-all-v6 ipv6-ipfix ];
+                }
                 address ::10.254.4.30/64;
             }
         }
@@ -195,6 +250,49 @@ interfaces {
         }
     }
 }
+forwarding-options {
+    sampling {
+        instance {
+            ipfix_instance {
+                input {                 
+                    rate 1;
+                }
+                family inet {
+                    output {
+                        flow-server 102.1.0.2 {
+                            port 9777;
+                            version-ipfix {
+                                template {
+                                    ipv4_template;
+                                }
+                            }
+                        }
+                        inline-jflow {
+                            source-address 104.44.217.229;
+                            flow-export-rate 100;
+                        }
+                    }
+                }
+                family inet6 {
+                    output {
+                        flow-server 102.1.1.2 {
+                            port 9777;
+                            version-ipfix {
+                                template {
+                                    ipv6_template;
+                                }
+                            }
+                        }
+                        inline-jflow {
+                            source-address 104.44.217.229;
+                            flow-export-rate 100;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 routing-options {
     router-id 104.44.217.229;
     forwarding-table {
@@ -249,6 +347,60 @@ policy-options {
         }
     }
 }
+firewall {
+    family inet {
+        filter ipfix {
+            interface-specific;
+            term sampled_packets {
+                from {
+                    source-address {
+                        0.0.0.0/0;
+                    }
+                }
+                then {
+                    count ipv4_sample;
+                    sample;
+                    accept;
+                }
+            }
+        }
+        filter accept-all-v4 {
+            interface-specific;
+            term acceptAll {
+                then {
+                    count all-v4-pkts;
+                    accept;
+                }
+            }
+        }
+    }
+    family inet6 {                      
+        filter ipv6-ipfix {
+            interface-specific;
+            term sampled_packets {
+                from {
+                    source-address {
+                        ::/0;
+                    }
+                }
+                then {
+                    count ipv6_sample;
+                    sample;   
+                    accept;
+                }
+            }
+        }
+        filter accept-all-v6 {
+            interface-specific;
+            term acceptAll {
+                then {
+                    count all-v6-pkts;
+                    accept;
+                }
+            }
+        }
+    }
+}
 routing-instances {
     vpnA {
         instance-type virtual-router;
@@ -258,7 +410,7 @@ routing-instances {
         routing-options {
             static {
                 route 101.1.0.0/24 {
-                    next-hop [ 10.254.3.236 10.254.4.236 ];
+                    next-hop [ 10.254.3.236 12.200.1.1 12.200.1.2 ];
                     resolve;
                     longest-match;
                 }

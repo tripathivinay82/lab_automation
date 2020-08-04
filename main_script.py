@@ -14,6 +14,9 @@ import multiprocessing
 import time
 import os 
 import subprocess
+import numpy as np
+import pandas as pd
+from jnpr.junos.utils.scp import SCP
 
 NUM_PROCESSES = 1 
 
@@ -27,6 +30,7 @@ def vmm_start_config():
     userPass = getpass.getpass() 
     vmmConfig = str(input("Please Enter The VMM Config File Location and Name: ")) or "/vmm/data/user_disks/vinayt/msft/exr/vmx.conf"
     vmmCmd = "vmm config " + vmmConfig + " -g vmm-default"
+    print(f'Final VMM Config Command: {vmmCmd}')
     
     try:
         # initialize the SSH client
@@ -63,7 +67,6 @@ def vmm_start_config():
                 return False
     except:
         print(out)
-        print(err)
         sys.exit()
     else:
         count = 1
@@ -270,68 +273,17 @@ def config_flex_route(hostname):
     return True
 
 
-def ucast_flex_route_checker(hostname):
-    '''
-    This function will perform following tasks: 
-    1) check if route is a unicast flex route or not 
-    2) if flex route, check programming at RE and PFE 
-    '''
-
-
-def ulist_flex_route_checker(hostname,static_route,next_hops):
-    '''
-    This function will perform following tasks: 
-
-    1) check if route is a unlist pointing to flex route NH or not 
-    2) if NH are flex route, check programming of all NHs at RE and PFE 
-    '''
-
-    print(f"Hostname: {hostname}")
-
-    username = 'regress'
-    password = 'MaRtInI'
-
-    try:
-        with Device(host=hostname, user=username, password=password, normalize=True) as dev:
-            dev.open()
-    except ConnectRefusedError:
-        print("%s: Error - Device connection refused!" % hostname)
-        return False
-    except ConnectTimeoutError:
-        print("%s: Error - Device connection timed out!" % hostname)
-        return False
-    except ConnectAuthError:
-        print("%s: Error - Authentication failure!" % hostname)
-        return False
-
-    return True
-
-
-def ecmp_over_flex_route_checker(hostname):
+def ecmp_over_flex_route(hostname):
     '''
     This function will perform following tasks: 
     1) Check if the route is unicast/unilist 
     3) verify the route programming in RE and PFE
     '''
  
-    print(f"ecmp_over_flex_route_checker: Hostname: {hostname}")
+    print(f"ecmp_over_flex_route: Hostname: {hostname}")
 
     username = 'regress'
     password = 'MaRtInI'
-
-    #try:
-    #    with Device(host=hostname, user=username, password=password, normalize=True) as dev:
-    #        dev.open()
-
-    #except ConnectRefusedError:
-    #    print("%s: Error - Device connection refused!" % hostname)
-    #    return False
-    #except ConnectTimeoutError:
-    #    print("%s: Error - Device connection timed out!" % hostname)
-    #    return False
-    #except ConnectAuthError:
-    #    print("%s: Error - Authentication failure!" % hostname)
-    #    return False
 
     dev = Device(host=hostname, user=username, password=password, normalize=True)
     dev.open()
@@ -343,54 +295,201 @@ def ecmp_over_flex_route_checker(hostname):
     static_route = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['name']))
     next_hops = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['next-hop']))
 
-    # Collect data from indirect NH
-    rpc=dev.rpc.get_route_information(destination=static_route,table='vpnA.inet',extensive=True,active_path=True)
-    result=rpc.xpath(".//rt-entry/protocol-nh[nh-type]")
-    #Generate a dictionary with all the values
-    nested_dict = {}
-    for count,value in enumerate(result):
-        dict_count = {}
-        for cnt,val in enumerate(value):
-            dict_count[cnt] = val.text
-        #print(f"New Dict Created; Name and Value: {dict_count}") 
-        nested_dict[count] = dict_count
-             
-    print(f"Nested Dict {nested_dict}")
-    #Generate a new dict with key value as NH IP 
-    inh_dict = {}
-    nh_col = []
-    for key,value in nested_dict.items():
-        print(value)
-        nh_col.append(value[0])                                 # NH IP 
-        nh_col.append(value[1].split()[1])                      # Indirect NHID 
-        nh_col.append(value[3])                                 # NH Type
-        nh_col.append(value[4])                                 # Unicast NH ID
-        nh_col.append(value[6].split()[3])                     # RI Name
-        nh_col.append(value[6].split()[13])                    # FTI Name
-        inh_dict[value[0]] = nh_col                           # assign list as value of dict
-        nh_col = []                                             # Empty the list
+    # Collect data related to static route and their NH
+    rpc=dev.rpc.get_route_information(destination=static_route,table='vpnA.inet',extensive=True,active_path=True,)
+    sroute_dict = {}
 
-    print(inh_dict)        
-
-
-
-    # Collect data from unicast NH
-    ucast_dict = {} 
     for ip in next_hops:
-        rpc=dev.rpc.get_route_information(destination=ip,table='vpnA.inet',extensive=True,active_path=True)
-        ucast_dict[ip] = [rpc.xpath(".//table-name")[0].text]
-        ucast_dict[ip].append(rpc.xpath(".//rt-destination")[0].text)
-        ucast_dict[ip].append(rpc.xpath(".//nh-index")[0].text)
-        ucast_dict[ip].append(rpc.xpath(".//via")[0].text)
-        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[0])
-        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[6])
-        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[8])
-        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[9])
-        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[11])
-        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[23])
-        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[27])
-        ucast_dict[ip].append(rpc.xpath(".//rt-entry-opaque-data")[0].text.split()[14])
-        
+        inh =rpc.xpath('.//rt-entry/protocol-nh[to=\'' + ip + '\'][1]/indirect-nh[1]')[0].text.split(' ')[1]
+        rtype=rpc.xpath('.//rt-entry/protocol-nh[to=\'' + ip + '\']/protocol-nh/nh-type[1]')[0].text
+        nhindex=rpc.xpath('.//rt-entry/protocol-nh[to=\'' + ip + '\']/protocol-nh/nh-index[1]')[0].text
+        rib=rpc.xpath('.//rt-entry/protocol-nh[to=\'' + ip + '\']/protocol-nh/originating-rib[1]')[0].text
+        ifl=rpc.xpath('.//rt-entry/protocol-nh[to=\'' + ip + '\']/protocol-nh/nh/via[1]')[0].text
+        sroute_dict[ip] = [inh, ifl, rtype, nhindex, rib]
+    
+    df = pd.DataFrame(sroute_dict, index=['Indirect NH', 'IFL', 'Route Type', 'NH Index', 'RT'])
+    print()
+    print(f'Data Collected from Static Route [RE]:')
+    print(df)
+    print()
+    print()
+
+    # Collect data related to static route next-hops
+    ucast_dict = {}
+    for ip in next_hops:
+
+        rpc=dev.rpc.get_route_information(destination=ip,table='vpnA.inet',extensive=True,active_path=True,)
+        rtTable = rpc.xpath('.//route-table/table-name')[0].text
+        nhType = rpc.xpath('.//rt-entry/nh-type')[0].text
+        nhIndex = rpc.xpath('.//rt-entry/nh-index')[0].text
+        ifl = rpc.xpath('.//rt-entry/nh/via')[0].text
+        encap = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[2]
+        action = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[6]
+        vni = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[12]
+        spfx = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[15]
+        smac = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[26]
+        dpfx = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[29]
+        dport = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[33]
+        dmac = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[37]
+        ucast_dict[ip] = [rtTable, nhType, nhIndex, ifl, encap, action, vni, spfx, smac, dpfx, dport, dmac]
+
+    df = pd.DataFrame(ucast_dict, index=['RT', 'NH Type', 'NH Index', 'IFL', 'ENCAP', 'ACTION', 'VNI', 'Source Prefix', 'Src MAC', 'Dest Prefix', 'Dest UDP Port', 'Dest MAC'])
+    print(f'Data Collected from Static Route Next-Hops [RE]:')
+    print(df)
+    print()
+    print()
+
+    # Collect data related to static route from Kernel
+    fwd_dict = {}
+
+    rpc=dev.rpc.get_forwarding_table_information(destination=static_route,table='vpnA')
+
+    destIp = rpc.xpath('.//rt-entry/rt-destination')[0].text
+    destType = rpc.xpath('.//rt-entry/destination-type')[0].text
+
+    nhType1 = rpc.xpath('.//rt-entry/nh[1]/nh-type')[0].text
+    nhIndex1 = rpc.xpath('.//rt-entry/nh[1]/nh-index')[0].text
+
+    nhType2 = rpc.xpath('.//rt-entry/nh[2]/nh-type')[0].text
+    nhIndex2 = rpc.xpath('.//rt-entry/nh[2]/nh-index')[0].text
+    
+    nhType3 = rpc.xpath('.//rt-entry/nh[3]/nh-type')[0].text
+    nhIndex3 = rpc.xpath('.//rt-entry/nh[3]/nh-index')[0].text    
+    nhIfl3 = rpc.xpath('.//rt-entry/nh[3]/via')[0].text 
+    
+    nhType4 = rpc.xpath('.//rt-entry/nh[4]/nh-type')[0].text
+    nhIndex4 = rpc.xpath('.//rt-entry/nh[4]/nh-index')[0].text
+    
+    nhType5 = rpc.xpath('.//rt-entry/nh[5]/nh-type')[0].text
+    nhIndex5 = rpc.xpath('.//rt-entry/nh[5]/nh-index')[0].text    
+    nhIfl5 = rpc.xpath('.//rt-entry/nh[5]/via')[0].text
+    
+    nhType6 = rpc.xpath('.//rt-entry/nh[6]/nh-type')[0].text
+    nhIndex6 = rpc.xpath('.//rt-entry/nh[6]/nh-index')[0].text
+    
+    nhType7 = rpc.xpath('.//rt-entry/nh[7]/nh-type')[0].text
+    nhIndex7 = rpc.xpath('.//rt-entry/nh[7]/nh-index')[0].text    
+    nhIfl7 = rpc.xpath('.//rt-entry/nh[7]/via')[0].text
+
+    # Collect data related to static route from Kernel
+    rpc=dev.rpc.get_forwarding_table_information(destination=static_route,table='vpnA')
+
+    destIp = rpc.xpath('.//rt-entry/rt-destination')[0].text
+    destType = rpc.xpath('.//rt-entry/destination-type')[0].text
+
+    nhType1 = rpc.xpath('.//rt-entry/nh[1]/nh-type')[0].text
+    nhIndex1 = rpc.xpath('.//rt-entry/nh[1]/nh-index')[0].text
+
+    nhType2 = rpc.xpath('.//rt-entry/nh[2]/nh-type')[0].text
+    nhIndex2 = rpc.xpath('.//rt-entry/nh[2]/nh-index')[0].text
+    
+    nhType3 = rpc.xpath('.//rt-entry/nh[3]/nh-type')[0].text
+    nhIndex3 = rpc.xpath('.//rt-entry/nh[3]/nh-index')[0].text    
+    nhIfl3 = rpc.xpath('.//rt-entry/nh[3]/via')[0].text 
+    
+    nhType4 = rpc.xpath('.//rt-entry/nh[4]/nh-type')[0].text
+    nhIndex4 = rpc.xpath('.//rt-entry/nh[4]/nh-index')[0].text
+    
+    nhType5 = rpc.xpath('.//rt-entry/nh[5]/nh-type')[0].text
+    nhIndex5 = rpc.xpath('.//rt-entry/nh[5]/nh-index')[0].text    
+    nhIfl5 = rpc.xpath('.//rt-entry/nh[5]/via')[0].text
+    
+    nhType6 = rpc.xpath('.//rt-entry/nh[6]/nh-type')[0].text
+    nhIndex6 = rpc.xpath('.//rt-entry/nh[6]/nh-index')[0].text
+    
+    nhType7 = rpc.xpath('.//rt-entry/nh[7]/nh-type')[0].text
+    nhIndex7 = rpc.xpath('.//rt-entry/nh[7]/nh-index')[0].text    
+    nhIfl7 = rpc.xpath('.//rt-entry/nh[7]/via')[0].text
+
+    print("Static Route: Kernel View")
+    print(f'{"Destination":<10}{"Dest Type":>15}{"NH Type":>15}{"NH Index":>15}{"NH IFL":>15}')   
+    print(f'{destIp:<10}{destType:>13}{nhType1:>15}{nhIndex1:>15}') 
+    print(f'{nhType2:>25}{nhIndex2:>15}')
+    print(f'{nhType3:>25}{nhIndex3:>15}{nhIfl3:>15}')
+    print(f'{nhType4:>25}{nhIndex4:>15}')
+    print(f'{nhType5:>25}{nhIndex5:>15}{nhIfl5:>15}')
+    print(f'{nhType6:>25}{nhIndex6:>15}')
+    print(f'{nhType7:>25}{nhIndex7:>15}{nhIfl7:>15}')
+    print()
+    print()
+
+    # Get the IP route table index from PFE
+    rpc=dev.rpc.request_pfe_execute(target='fpc0',command='show route table proto ip', timeout='5')
+    for line in str.splitlines(rpc.text):
+        if '__flexible_tunnel_profiles__' in line:
+            pat = line.strip().split()[1]
+            print(f'PFE Route Table Index for Flex Tunnel Profile (DECAP): {pat}')
+            print()
+        elif 'vpnA' in line:
+            tableIndex = line.strip().split()[1]
+            print(f'PFE Route Table Index for RI: {tableIndex}')
+            print()
+
+    # Collect static route details from PFE
+    cmd = 'show route prefix proto ip table-index ' + tableIndex + ' ' + static_route[0] + ' detail'
+    rpc=dev.rpc.request_pfe_execute(target='fpc0',command=cmd, timeout='15')
+
+    print("Static route: PFE View")
+    print(f'{"Destination":<10}{"NH Type":>15}{"NH Index":>15}{"NH IFL":>15}{"NH IFL Index":>15}')
+
+    for line in str.splitlines(rpc.text):
+        if str(static_route) in line:
+            dstIp = line.strip().split()[0]
+            nhType = line.strip().split()[1]
+            nhId = line.strip().split()[2]
+            print(f'{destIp:<10}{nhType:>15}{nhId:>15}') 
+        elif 'pfe' in line and 'Indirect' in line:
+            inhIndex=line.split()[0].split('(')[0]
+            inhType=line.split()[0].split('(')[1].split(',')[0]
+            inhIflInx=line.split()[2].split(':')[1]
+            inhIfl=line.split()[2].split(':')[2].split(',')[0]
+            print(f'{inhType:>25}{inhIndex:>15}{inhIfl:>15}{inhIflInx:>15}')
+        elif 'pfe' in line and 'Unicast' in line:
+            uIndex=line.split()[0].split('(')[0]
+            uType=line.split()[0].split('(')[1].split(',')[0]
+            uIflInx=line.split()[2].split(':')[1]
+            uIfl=line.split()[2].split(':')[2].split(',')[0]
+            print(f'{uType:>25}{uIndex:>15}{uIfl:>15}{uIflInx:>15}')
+
+    print()
+    print()
+
+    # Collect Flex Route NH details from PFE
+    pfe_ucast = {}
+    for ip in next_hops:
+
+        cmd = 'show route prefix proto ip table-index ' + tableIndex + ' ' + ip + ' detail'
+        rpc=dev.rpc.request_pfe_execute(target='fpc0',command=cmd)
+
+        for line in str.splitlines(rpc.text):
+            if 'pfe' in line and 'Unicast' in line:
+                pfe_ucast[ip] = [line.split()[0].split('(')[1].split(',')[0]]
+                pfe_ucast[ip].append(line.split()[0].split('(')[0])
+                pfe_ucast[ip].append(line.split()[2].split(':')[2].split(',')[0])
+                pfe_ucast[ip].append(line.split()[2].split(':')[1])
+            elif 'Type:' in line:
+                pfe_ucast[ip].append(line.split()[1])
+            elif 'params' in line:
+                pfe_ucast[ip].append(line.split()[1])
+            elif 'Destination IP:' in line:
+                pfe_ucast[ip].append(line.split()[2])
+            elif 'VNI:' in line:
+                pfe_ucast[ip].append(line.split()[1])
+            elif 'Dest MAC:' in line:
+                pfe_ucast[ip].append(line.split()[2])
+            elif 'Source IP:' in line:
+                pfe_ucast[ip].append(line.split()[2])
+            elif 'Destination Port:' in line:
+                pfe_ucast[ip].append(line.split()[2])
+            elif 'Src MAC:' in line:
+                pfe_ucast[ip].append(line.split()[2])
+
+    df = pd.DataFrame(pfe_ucast, index=['NH Type', 'NH Index', 'IFL', 'IFL Index', 'ENCAP', 'ACTION','Dest IP', 'VNI', 'Dest MAC','Src IP', 'Dst Port','Src MAC'])
+    print(f'Data Collected from Flex Route Next-Hops [PFE]:')
+    print(df)
+    print()
+
+    dev.close()
     return True    
 
 
@@ -433,13 +532,13 @@ def main():
     '''
     This is the main function...More details to follow
     '''
-    
+
     #Run and configure VMM
     retVal = vmm_start_config()
     print(f"Return Vale: {retVal}")
     print(f"Return Vale Type: {type(retVal)}")
 
-    if retVal is False and isinstance(inp1, bool):
+    if retVal is False and isinstance(retVal, bool):
         print(f"VMM Start Failed! Reason: {retVal}")
         sys.exit()
     elif isinstance(retVal, dict) and retVal:
@@ -457,16 +556,8 @@ def main():
     print("Lets Wait for 5 minutes for VMs to get stablize..")
     time.sleep(300)
 
-
-    #hostname='10.49.103.15'
-    #ecmp_over_flex_route_checker(hostname)
-    #print("********Funtcion completed**Sleeping now*********")
-    #time.sleep(500)
- 
     #Verify Router State and configuration 
-    # ROuter list for D24.11
-    #router_dict={'r1_re0': '10.49.103.152', 'r2_re0': '10.49.103.15', 'r3_re0': '10.49.103.148', 'r4_re0': '10.49.101.64', 'r5_re0': '10.49.101.62'}
-    
+    # Router list for D24.11
     time_start = time.time()
     with multiprocessing.Pool(processes=NUM_PROCESSES) as process_pool: 
         retVal=process_pool.map(check_router, router_dict.values()) 
@@ -502,11 +593,19 @@ def main():
     else:
         print("Oops!!Router Config Failed..")
 
+    #router_dict={'r1_re0': '10.49.103.61', 'r2_re0': '10.49.103.42', 'r3_re0': '10.49.103.184', 'r4_re0': '10.49.103.182', 'r5_re0': '10.49.103.150'}
+
     # Configure Flex Route from controller
     if config_flex_route(router_dict['r2_re0']) and config_flex_route(router_dict['r4_re0']):
         print("Flex Route programming Successful!!")
     else:
         print("Oops!!Flex Route programming failed!..")
+
+    # Verify Flex Route
+    if ecmp_over_flex_route(router_dict['r2_re0']):
+        print("R2: RE/Kernel/PFE: Flex Route Verification Successful!!")
+    else:
+        print("Oops!!R2: Flex Route verification failed!..")
 
 if __name__ == "__main__":
     main()    
