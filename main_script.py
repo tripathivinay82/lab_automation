@@ -170,51 +170,37 @@ def check_protocols(hostname):
                 rpc = dev.rpc.get_ospf_neighbor_information()
                 rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
                 result = jxmlease.parse(rpc_xml)
-                print('Checking neighbor with IP address: ' + result['ospf-neighbor-information']['ospf-neighbor']['neighbor-address'])
-                print(result['ospf-neighbor-information']['ospf-neighbor']['interface-name'])
-                print(result['ospf-neighbor-information']['ospf-neighbor']['ospf-neighbor-state'])
+                print('Neighbor IP: ' + result['ospf-neighbor-information']['ospf-neighbor']['neighbor-address'] + ' ' + result['ospf-neighbor-information']['ospf-neighbor']['interface-name'] + ' ' + result['ospf-neighbor-information']['ospf-neighbor']['ospf-neighbor-state'])
             elif retVal['hostname'] == 'DCGW': 
                 print(f"**** Checking Protocols for Device: {retVal['hostname']} ****")
                 rpc = dev.rpc.get_ospf_neighbor_information()
                 rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
                 result = jxmlease.parse(rpc_xml)
-                print('Checking neighbor with IP address: ' + result['ospf-neighbor-information']['ospf-neighbor']['neighbor-address'])
-                print(result['ospf-neighbor-information']['ospf-neighbor']['interface-name'])
-                print(result['ospf-neighbor-information']['ospf-neighbor']['ospf-neighbor-state'])
+                print('Neighbor IP: ' + result['ospf-neighbor-information']['ospf-neighbor']['neighbor-address'] + ' ' + result['ospf-neighbor-information']['ospf-neighbor']['interface-name'] + ' ' + result['ospf-neighbor-information']['ospf-neighbor']['ospf-neighbor-state'])
                 rpc = dev.rpc.get_bgp_summary_information()
                 rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
                 result = jxmlease.parse(rpc_xml)
                 for neighbor in result['bgp-information']['bgp-peer']:
-                    print('Checking peer with IP address: ' + neighbor['peer-address'])
-                    print(neighbor['peer-as'])
-                    print(neighbor['peer-state'])
-                    print(neighbor['elapsed-time'])
+                    print('Neighbor IP: ' + neighbor['peer-address'] + ' ' + neighbor['peer-as'] + ' ' + neighbor['peer-state'] + ' ' + neighbor['elapsed-time'])
             elif retVal['hostname'] == 'exr02.chg':
                 print(f"*** Checking Protocols for Device: {retVal['hostname']} ****")
                 rpc = dev.rpc.get_ospf_neighbor_information()
                 rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
                 result = jxmlease.parse(rpc_xml)
                 for neighbor in result['ospf-neighbor-information']['ospf-neighbor']:
-                    print('Checking neighbor with IP address: ' + neighbor['neighbor-address'])
-                    print(neighbor['interface-name'])
-                    print(neighbor['ospf-neighbor-state'])
+                    print('Neighbor IP: ' + neighbor['neighbor-address'] + ' ' + neighbor['interface-name'] + ' ' + neighbor['ospf-neighbor-state'])
                 rpc = dev.rpc.get_bgp_summary_information()
                 rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
                 result = jxmlease.parse(rpc_xml)
                 for neighbor in result['bgp-information']['bgp-peer']:
-                    print('Checking peer with IP address: ' + neighbor['peer-address'])
-                    print(neighbor['peer-as'])
-                    print(neighbor['peer-state'])
-                    print(neighbor['elapsed-time'])
+                    print('Neighbor IP: ' + neighbor['peer-address'] + ' ' + neighbor['peer-as'] + ' ' + neighbor['peer-state'] + ' ' + neighbor['elapsed-time'])
             elif retVal['hostname'] == 'IER':
                 print(f"****Checking Protocols for Device: {retVal['hostname']}****")
                 rpc = dev.rpc.get_ospf_neighbor_information()
                 rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
                 result = jxmlease.parse(rpc_xml)
                 for neighbor in result['ospf-neighbor-information']['ospf-neighbor']:
-                    print('Checking neighbor with IP address: ' + neighbor['neighbor-address'])
-                    print(neighbor['interface-name'])
-                    print(neighbor['ospf-neighbor-state'])
+                    print('Neighbor IP: ' + neighbor['neighbor-address'] + ' ' + neighbor['interface-name'] + ' ' + neighbor['ospf-neighbor-state'])
             else:
                 print(f"Incorrect Hostname {retVal['hostname']}" )
                 return False
@@ -280,7 +266,7 @@ def ecmp_over_flex_route(hostname):
     3) verify the route programming in RE and PFE
     '''
  
-    print(f"ecmp_over_flex_route: Hostname: {hostname}")
+    print(f"Hostname: {hostname}")
 
     username = 'regress'
     password = 'MaRtInI'
@@ -316,6 +302,7 @@ def ecmp_over_flex_route(hostname):
 
     # Collect data related to static route next-hops
     ucast_dict = {}
+    re_dict = {}
     for ip in next_hops:
 
         rpc=dev.rpc.get_route_information(destination=ip,table='vpnA.inet',extensive=True,active_path=True,)
@@ -326,13 +313,15 @@ def ecmp_over_flex_route(hostname):
         encap = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[2]
         action = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[6]
         vni = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[12]
-        spfx = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[15]
+        spfx = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[15].split('/')[0]
         smac = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[26]
         dpfx = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[29]
         dport = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[33]
         dmac = rpc.xpath('.//rt-entry/rt-entry-opaque-data')[0].text.split(' ')[37]
         ucast_dict[ip] = [rtTable, nhType, nhIndex, ifl, encap, action, vni, spfx, smac, dpfx, dport, dmac]
+        re_dict[ip] = [nhIndex, ifl, encap, vni, smac, dport, dmac] #Not able to add Src and Dst Prefi because of format diff in RE & PFE
 
+    print(f"RE Data Captured for Comparision: {re_dict}")
     df = pd.DataFrame(ucast_dict, index=['RT', 'NH Type', 'NH Index', 'IFL', 'ENCAP', 'ACTION', 'VNI', 'Source Prefix', 'Src MAC', 'Dest Prefix', 'Dest UDP Port', 'Dest MAC'])
     print(f'Data Collected from Static Route Next-Hops [RE]:')
     print(df)
@@ -456,6 +445,7 @@ def ecmp_over_flex_route(hostname):
 
     # Collect Flex Route NH details from PFE
     pfe_ucast = {}
+    pfe_dict = {}
     for ip in next_hops:
 
         cmd = 'show route prefix proto ip table-index ' + tableIndex + ' ' + ip + ' detail'
@@ -464,33 +454,60 @@ def ecmp_over_flex_route(hostname):
         for line in str.splitlines(rpc.text):
             if 'pfe' in line and 'Unicast' in line:
                 pfe_ucast[ip] = [line.split()[0].split('(')[1].split(',')[0]]
+                pfe_dict[ip] = [line.split()[0].split('(')[0]]
                 pfe_ucast[ip].append(line.split()[0].split('(')[0])
                 pfe_ucast[ip].append(line.split()[2].split(':')[2].split(',')[0])
+                pfe_dict[ip].append(line.split()[2].split(':')[2].split(',')[0])
                 pfe_ucast[ip].append(line.split()[2].split(':')[1])
             elif 'Type:' in line:
                 pfe_ucast[ip].append(line.split()[1])
+                pfe_dict[ip].append(line.split()[1].upper())
             elif 'params' in line:
                 pfe_ucast[ip].append(line.split()[1])
             elif 'Destination IP:' in line:
                 pfe_ucast[ip].append(line.split()[2])
+                #pfe_dict[ip].append(line.split()[2])
             elif 'VNI:' in line:
                 pfe_ucast[ip].append(line.split()[1])
+                pfe_dict[ip].append(line.split()[1])
             elif 'Dest MAC:' in line:
                 pfe_ucast[ip].append(line.split()[2])
+                pfe_dict[ip].append(line.split()[2])
             elif 'Source IP:' in line:
                 pfe_ucast[ip].append(line.split()[2])
+                #pfe_dict[ip].append(line.split()[2])
             elif 'Destination Port:' in line:
                 pfe_ucast[ip].append(line.split()[2])
+                pfe_dict[ip].append(line.split()[2])
             elif 'Src MAC:' in line:
                 pfe_ucast[ip].append(line.split()[2])
+                pfe_dict[ip].append(line.split()[2])
 
+    print(f"PFE Data Captured for Comparision: {pfe_dict}")
     df = pd.DataFrame(pfe_ucast, index=['NH Type', 'NH Index', 'IFL', 'IFL Index', 'ENCAP', 'ACTION','Dest IP', 'VNI', 'Dest MAC','Src IP', 'Dst Port','Src MAC'])
     print(f'Data Collected from Flex Route Next-Hops [PFE]:')
     print(df)
     print()
 
     dev.close()
-    return True    
+
+    # Compare RE and PFE data
+    flag = 0
+    for key,value in re_dict.items():
+        for ret in value:
+            if ret in pfe_dict[key]:
+                #print('match')
+                continue
+            else:
+                print(f'Difference bw RE and PFE Data: {ret}')
+                flag=1
+                
+    if flag == 0:
+        print('Flex Route: RE and PFE are in Sync')
+        return True
+    else:
+        print('Opps!! Flex Route: RE & PFE are out of Sync!')
+        return False
 
 
 def config_change(hostname):
@@ -532,29 +549,35 @@ def main():
     '''
     This is the main function...More details to follow
     '''
+    isVm = str(input("Is VM setup creation needed? [Yes/No]: ")) or "No"
+ 
+    if isVm == 'Yes':
+        #Run and configure VMM
+        retVal = vmm_start_config()
+        print(f"Return Vale: {retVal}")
+        print(f"Return Vale Type: {type(retVal)}")
 
-    #Run and configure VMM
-    retVal = vmm_start_config()
-    print(f"Return Vale: {retVal}")
-    print(f"Return Vale Type: {type(retVal)}")
+        if retVal is False and isinstance(retVal, bool):
+            print(f"VMM Start Failed! Reason: {retVal}")
+            sys.exit()
+        elif isinstance(retVal, dict) and retVal:
+            router_dict = retVal
+            print(f"List of VMM Routers: {router_dict}")
+            print("VMM Setup and Configuration Was Successful!!")
+        elif retVal:
+            print(f"VMM Start Failed as Router List is Empty! Return Value: {retVal}")
+            sys.exit()
+        else:
+            print("VMM Start Failed Because of Unkown Reason! Return Value: {retVal}")
+            sys.exit()
 
-    if retVal is False and isinstance(retVal, bool):
-        print(f"VMM Start Failed! Reason: {retVal}")
-        sys.exit()
-    elif isinstance(retVal, dict) and retVal:
-        router_dict = retVal
-        print(f"List of VMM Routers: {router_dict}")
-        print("VMM Setup and Configuration Was Successful!!")
-    elif retVal:
-        print(f"VMM Start Failed as Router List is Empty! Return Value: {retVal}")
-        sys.exit()
+        #Lets give VMs enough time to settle down
+        print("Lets Wait for 5 minutes for VMs to get stablize..")
+        time.sleep(300)
     else:
-        print("VMM Start Failed Because of Unkown Reason! Return Value: {retVal}")
-        sys.exit()
+        print('VM creation skipped as per User Input')
 
-    #Lets give VMs enough time to settle down
-    print("Lets Wait for 5 minutes for VMs to get stablize..")
-    time.sleep(300)
+    router_dict={'r1_re0': '10.49.103.61', 'r2_re0': '10.49.103.42', 'r3_re0': '10.49.103.184', 'r4_re0': '10.49.103.182', 'r5_re0': '10.49.103.150'}
 
     #Verify Router State and configuration 
     # Router list for D24.11
