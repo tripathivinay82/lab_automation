@@ -329,38 +329,6 @@ def ecmp_over_flex_route(hostname):
     print()
 
     # Collect data related to static route from Kernel
-    fwd_dict = {}
-
-    rpc=dev.rpc.get_forwarding_table_information(destination=static_route,table='vpnA')
-
-    destIp = rpc.xpath('.//rt-entry/rt-destination')[0].text
-    destType = rpc.xpath('.//rt-entry/destination-type')[0].text
-
-    nhType1 = rpc.xpath('.//rt-entry/nh[1]/nh-type')[0].text
-    nhIndex1 = rpc.xpath('.//rt-entry/nh[1]/nh-index')[0].text
-
-    nhType2 = rpc.xpath('.//rt-entry/nh[2]/nh-type')[0].text
-    nhIndex2 = rpc.xpath('.//rt-entry/nh[2]/nh-index')[0].text
-    
-    nhType3 = rpc.xpath('.//rt-entry/nh[3]/nh-type')[0].text
-    nhIndex3 = rpc.xpath('.//rt-entry/nh[3]/nh-index')[0].text    
-    nhIfl3 = rpc.xpath('.//rt-entry/nh[3]/via')[0].text 
-    
-    nhType4 = rpc.xpath('.//rt-entry/nh[4]/nh-type')[0].text
-    nhIndex4 = rpc.xpath('.//rt-entry/nh[4]/nh-index')[0].text
-    
-    nhType5 = rpc.xpath('.//rt-entry/nh[5]/nh-type')[0].text
-    nhIndex5 = rpc.xpath('.//rt-entry/nh[5]/nh-index')[0].text    
-    nhIfl5 = rpc.xpath('.//rt-entry/nh[5]/via')[0].text
-    
-    nhType6 = rpc.xpath('.//rt-entry/nh[6]/nh-type')[0].text
-    nhIndex6 = rpc.xpath('.//rt-entry/nh[6]/nh-index')[0].text
-    
-    nhType7 = rpc.xpath('.//rt-entry/nh[7]/nh-type')[0].text
-    nhIndex7 = rpc.xpath('.//rt-entry/nh[7]/nh-index')[0].text    
-    nhIfl7 = rpc.xpath('.//rt-entry/nh[7]/via')[0].text
-
-    # Collect data related to static route from Kernel
     rpc=dev.rpc.get_forwarding_table_information(destination=static_route,table='vpnA')
 
     destIp = rpc.xpath('.//rt-entry/rt-destination')[0].text
@@ -615,8 +583,6 @@ def main():
         print("Router Config Successful!!")
     else:
         print("Oops!!Router Config Failed..")
-
-    #router_dict={'r1_re0': '10.49.103.61', 'r2_re0': '10.49.103.42', 'r3_re0': '10.49.103.184', 'r4_re0': '10.49.103.182', 'r5_re0': '10.49.103.150'}
 
     # Configure Flex Route from controller
     if config_flex_route(router_dict['r2_re0']) and config_flex_route(router_dict['r4_re0']):
