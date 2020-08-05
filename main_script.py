@@ -19,6 +19,8 @@ import pandas as pd
 from jnpr.junos.utils.scp import SCP
 
 NUM_PROCESSES = 1 
+username = 'regress'
+password = 'MaRtInI'
 
 def vmm_start_config():
     '''
@@ -158,9 +160,6 @@ def check_protocols(hostname):
 
     print(f"Hostname: {hostname}")
 
-    username = 'regress'
-    password = 'MaRtInI'
-
     try:
         with Device(host=hostname, user=username, password=password, normalize=True) as dev:
             dev.open()
@@ -223,9 +222,6 @@ def config_flex_route(hostname):
     
     print(f"Hostname: {hostname}")
 
-    username = 'regress'
-    password = 'MaRtInI'
-
     try:
         with Device(host=hostname, user=username, password=password, normalize=True) as dev:
             dev.open()
@@ -267,9 +263,6 @@ def ecmp_over_flex_route(hostname):
     '''
  
     print(f"Hostname: {hostname}")
-
-    username = 'regress'
-    password = 'MaRtInI'
 
     dev = Device(host=hostname, user=username, password=password, normalize=True)
     dev.open()
@@ -330,43 +323,30 @@ def ecmp_over_flex_route(hostname):
 
     # Collect data related to static route from Kernel
     rpc=dev.rpc.get_forwarding_table_information(destination=static_route,table='vpnA')
+    rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
+    result = jxmlease.parse(rpc_xml)
 
     destIp = rpc.xpath('.//rt-entry/rt-destination')[0].text
     destType = rpc.xpath('.//rt-entry/destination-type')[0].text
 
-    nhType1 = rpc.xpath('.//rt-entry/nh[1]/nh-type')[0].text
-    nhIndex1 = rpc.xpath('.//rt-entry/nh[1]/nh-index')[0].text
-
-    nhType2 = rpc.xpath('.//rt-entry/nh[2]/nh-type')[0].text
-    nhIndex2 = rpc.xpath('.//rt-entry/nh[2]/nh-index')[0].text
-    
-    nhType3 = rpc.xpath('.//rt-entry/nh[3]/nh-type')[0].text
-    nhIndex3 = rpc.xpath('.//rt-entry/nh[3]/nh-index')[0].text    
-    nhIfl3 = rpc.xpath('.//rt-entry/nh[3]/via')[0].text 
-    
-    nhType4 = rpc.xpath('.//rt-entry/nh[4]/nh-type')[0].text
-    nhIndex4 = rpc.xpath('.//rt-entry/nh[4]/nh-index')[0].text
-    
-    nhType5 = rpc.xpath('.//rt-entry/nh[5]/nh-type')[0].text
-    nhIndex5 = rpc.xpath('.//rt-entry/nh[5]/nh-index')[0].text    
-    nhIfl5 = rpc.xpath('.//rt-entry/nh[5]/via')[0].text
-    
-    nhType6 = rpc.xpath('.//rt-entry/nh[6]/nh-type')[0].text
-    nhIndex6 = rpc.xpath('.//rt-entry/nh[6]/nh-index')[0].text
-    
-    nhType7 = rpc.xpath('.//rt-entry/nh[7]/nh-type')[0].text
-    nhIndex7 = rpc.xpath('.//rt-entry/nh[7]/nh-index')[0].text    
-    nhIfl7 = rpc.xpath('.//rt-entry/nh[7]/via')[0].text
-
     print("Static Route: Kernel View")
     print(f'{"Destination":<10}{"Dest Type":>15}{"NH Type":>15}{"NH Index":>15}{"NH IFL":>15}')   
-    print(f'{destIp:<10}{destType:>13}{nhType1:>15}{nhIndex1:>15}') 
-    print(f'{nhType2:>25}{nhIndex2:>15}')
-    print(f'{nhType3:>25}{nhIndex3:>15}{nhIfl3:>15}')
-    print(f'{nhType4:>25}{nhIndex4:>15}')
-    print(f'{nhType5:>25}{nhIndex5:>15}{nhIfl5:>15}')
-    print(f'{nhType6:>25}{nhIndex6:>15}')
-    print(f'{nhType7:>25}{nhIndex7:>15}{nhIfl7:>15}')
+    
+    count = 0
+    for element in result['forwarding-table-information']['route-table']['rt-entry']['nh']:        
+        nhType = str(element['nh-type'])
+        nhIndex = str(element['nh-index'])
+        if count == 0:
+            print(f'{destIp:<10}{destType:>13}{nhType:>15}{nhIndex:>15}') 
+            count += 1
+            continue
+        
+        if re.search('ucst',nhType):
+            nhIfl = str(element['via'])
+            print(f'{nhType:>40}{nhIndex:>15}{nhIfl:>15}')
+        else:
+            print(f'{nhType:>40}{nhIndex:>15}')
+    
     print()
     print()
 
@@ -485,9 +465,6 @@ def config_change(hostname):
 
     print(f"Hostname: {hostname}")
 
-    username = 'regress'
-    password = 'MaRtInI'
-
     try:
         with Device(host=hostname, user=username, password=password, normalize=True) as dev:
             dev.open()
@@ -548,7 +525,6 @@ def main():
     router_dict={'r1_re0': '10.49.103.61', 'r2_re0': '10.49.103.42', 'r3_re0': '10.49.103.184', 'r4_re0': '10.49.103.182', 'r5_re0': '10.49.103.150'}
 
     #Verify Router State and configuration 
-    # Router list for D24.11
     time_start = time.time()
     with multiprocessing.Pool(processes=NUM_PROCESSES) as process_pool: 
         retVal=process_pool.map(check_router, router_dict.values()) 
