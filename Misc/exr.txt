@@ -385,11 +385,7 @@ firewall {
                 }
                 then {
                     count ipv6_sample;
-<<<<<<< HEAD:Misc/exr.txt
                     sample;   
-=======
-                    sample;
->>>>>>> 746c331a27f9de2a1cf007394353215eafaf58c8:exr.txt
                     accept;
                 }
             }
@@ -414,11 +410,8 @@ routing-instances {
         routing-options {
             static {
                 route 101.1.0.0/24 {
-<<<<<<< HEAD:Misc/exr.txt
                     next-hop [ 10.254.3.236 12.200.1.1 12.200.1.2 ];
-=======
                     next-hop [ 10.254.3.236 10.254.4.236 12.200.1.1 12.200.1.2 ];
->>>>>>> 746c331a27f9de2a1cf007394353215eafaf58c8:exr.txt
                     resolve;
                     longest-match;
                 }
