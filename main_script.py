@@ -496,7 +496,7 @@ def main():
     '''
     isVm = str(input("Is VM setup creation needed? [Yes/No]: ")) or "No"
  
-    if isVm == 'Yes':
+    if isVm == 'Yes' or isVm == 'yes':
         #Run and configure VMM
         retVal = vmm_start_config()
         print(f"Return Vale: {retVal}")
@@ -513,7 +513,7 @@ def main():
             print(f"VMM Start Failed as Router List is Empty! Return Value: {retVal}")
             sys.exit()
         else:
-            print("VMM Start Failed Because of Unkown Reason! Return Value: {retVal}")
+            print(f"VMM Start Failed Because of Unkown Reason! Return Value: {retVal}")
             sys.exit()
 
         #Lets give VMs enough time to settle down
@@ -522,7 +522,7 @@ def main():
     else:
         print('VM creation skipped as per User Input')
 
-    router_dict={'r1_re0': '10.49.103.61', 'r2_re0': '10.49.103.42', 'r3_re0': '10.49.103.184', 'r4_re0': '10.49.103.182', 'r5_re0': '10.49.103.150'}
+    #router_dict={'r1_re0': '10.49.235.170', 'r2_re0': '10.49.229.224', 'r3_re0': '10.49.229.222', 'r4_re0': '10.49.229.220', 'r5_re0': '10.49.229.219'}
 
     #Verify Router State and configuration 
     time_start = time.time()
