@@ -90,7 +90,7 @@ def vmm_start_config():
                 vm_ip = line.split(" ")[1]
                 vm_state = line.split(" ")[2]
                 vm_status_all.append(vm_state)
-                if count is 1 and '_re' in vm_name:
+                if count == 1 and '_re' in vm_name:
                     router_dict[vm_name] = vm_ip
                 #print(f"Router List: {router_dict}")
                 print(f"{vm_name:<20}{vm_ip:<10}{vm_state:>20}")
@@ -101,7 +101,7 @@ def vmm_start_config():
                 print("All VMs are alive")
                 client.close()
                 return router_dict            
-            elif count is '30':
+            elif count == '30':
                 print(f"VMs did not come up in {count} attempts! Stopping further checks..")
                 client.exec_command('vmm unbind')
                 client.close()
@@ -146,7 +146,7 @@ def check_router(hostname):
         if handle['state'] == 'Empty':
            pass
         elif handle['state'] == 'Online' and handle['slot'] == '0' or handle['slot'] == '1':
-           print(f"FPC state is {handle['state']} for slot {handle['slot']}")
+           print(f"FPC state == {handle['state']} for slot {handle['slot']}")
         else:
            print("Unkown FPC state..please investigate")
 
@@ -231,13 +231,13 @@ def config_flex_route(hostname):
             if retVal['hostname'] == 'exr02.chg':
                 retVal1 = subprocess.run([sys.executable, "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "encap_tunnel_profile-ipv4-vxlanv6_exr.json"], stdout=subprocess.DEVNULL, timeout=5)
                 retVal2 = subprocess.run([sys.executable, "decap_inject.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "decap_tunnel_profile_v6_exr.json"], stdout=subprocess.DEVNULL, timeout=5)
-                if retVal1.returncode is not 0 or retVal2.returncode is not 0:
+                if retVal1.returncode != 0 or retVal2.returncode != 0:
                     print(f"Oops!!Subprocess returned unexpected value...retVal1: {retVal1.returncode}, retVal2:{retVal2.returncode}")
                     return False
             elif retVal['hostname'] == 'DCGW':
                 retVal1 = subprocess.run([sys.executable, "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "encap_tunnel_profile-ipv4-vxlanv6_dcgw.json"], stdout=subprocess.DEVNULL, timeout=5)
                 retVal2 = subprocess.run([sys.executable, "decap_inject.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "decap_tunnel_profile_v6_dcgw.json"], stdout=subprocess.DEVNULL, timeout=5)
-                if retVal1.returncode is not 0 or retVal2.returncode is not 0:
+                if retVal1.returncode != 0 or retVal2.returncode != 0:
                     print(f"Oops!!Subprocess returned unexpected value...retVal1: {retVal1.returncode}, retVal2:{retVal2.returncode}")
                     return False
             else:
@@ -393,8 +393,6 @@ def ecmp_over_flex_route(hostname):
     print()
     print()
 
-    breakpoint()
-
     # Collect Flex Route NH details from PFE
     pfe_ucast = {}
     pfe_dict = {}
@@ -522,7 +520,7 @@ def main():
         print(f"Return Vale: {retVal}")
         print(f"Return Vale Type: {type(retVal)}")
 
-        if retVal is False and isinstance(retVal, bool):
+        if retVal == False and isinstance(retVal, bool):
             print(f"VMM Start Failed! Reason: {retVal}")
             sys.exit()
         elif isinstance(retVal, dict) and retVal:
