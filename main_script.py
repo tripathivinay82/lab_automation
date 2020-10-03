@@ -5,6 +5,8 @@ import getpass
 import sys
 from jnpr.junos import Device
 from jnpr.junos.utils.config import Config
+from jnpr.junos.utils.sw import SW
+from jnpr.junos.exception import ConnectError
 from lxml import etree
 import jxmlease
 import re
@@ -391,14 +393,14 @@ def ecmp_over_flex_route(hostname):
     print()
     print()
 
+    breakpoint()
+
     # Collect Flex Route NH details from PFE
     pfe_ucast = {}
     pfe_dict = {}
     for ip in next_hops:
-
         cmd = 'show route prefix proto ip table-index ' + tableIndex + ' ' + ip + ' detail'
         rpc=dev.rpc.request_pfe_execute(target='fpc0',command=cmd)
-
         for line in str.splitlines(rpc.text):
             if 'pfe' in line and 'Unicast' in line:
                 pfe_ucast[ip] = [line.split()[0].split('(')[1].split(',')[0]]
@@ -489,7 +491,25 @@ def config_change(hostname):
         return False
 
     return True 
-           
+
+def reboot_router(hostname):
+    '''
+    Reboot the routers
+    '''
+
+    username = 'regress'
+    password = 'MaRtInI'
+
+    print(f"Rebooting hostname {hostname}")
+
+    try:
+        with Device(host=hostname, user=username, password=password, normalize=True) as dev:
+            sw = SW(dev)
+            print(sw.reboot())
+    except ConnectError as err:
+        print(err)
+        return False
+
 def main():
     '''
     This is the main function...More details to follow
@@ -524,6 +544,24 @@ def main():
 
     #router_dict={'r1_re0': '10.49.235.170', 'r2_re0': '10.49.229.224', 'r3_re0': '10.49.229.222', 'r4_re0': '10.49.229.220', 'r5_re0': '10.49.229.219'}
 
+    #Verify Router Reboot 
+    time_start = time.time()
+    with multiprocessing.Pool(processes=NUM_PROCESSES) as process_pool: 
+        retVal=process_pool.map(reboot_router, router_dict.values()) 
+        process_pool.close() 
+        process_pool.join()
+    print(f"retVal {retVal}")
+    print("Reboot Function: Multiprocessing Finished in %f sec." % (time.time() - time_start)) 
+
+    if 'False' not in retVal:
+        print("Router Reboot Success..") 
+    else:
+        print("!!!Router Reboot Failed..Please debug")
+        return False
+
+    print("Lets Wait for 5 minutes for VMs to get stablize post reboot..")
+    time.sleep(300)
+
     #Verify Router State and configuration 
     time_start = time.time()
     with multiprocessing.Pool(processes=NUM_PROCESSES) as process_pool: 
@@ -531,7 +569,7 @@ def main():
         process_pool.close() 
         process_pool.join()
     print(f"retVal {retVal}")
-    print("Multiprocessing Finished in %f sec." % (time.time() - time_start)) 
+    print("Config Check Function: Multiprocessing Finished in %f sec." % (time.time() - time_start)) 
 
     if 'False' not in retVal:
         print("Router Check Passed..") 
