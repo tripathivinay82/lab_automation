@@ -557,8 +557,8 @@ def main():
         print("!!!Router Reboot Failed..Please debug")
         return False
 
-    print("Lets Wait for 5 minutes for VMs to get stablize post reboot..")
-    time.sleep(300)
+    print("Lets Wait for 10 minutes for VMs to get stablize post reboot..")
+    time.sleep(600)
 
     #Verify Router State and configuration 
     time_start = time.time()
