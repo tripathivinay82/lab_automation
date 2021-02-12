@@ -1,14 +1,11 @@
 system {
     host-name DCGW;
-    ports {
-        console log-out-on-disconnect;
-    }
     services {
         extension-service {
             request-response {
                 grpc {
                     clear-text {
-                        address 10.49.167.142;
+                        address 10.49.228.244;
                         port 50051;
                     }
                     skip-authentication;
@@ -18,6 +15,9 @@ system {
         netconf {
             ssh;
         }
+    }
+    ports {
+        console log-out-on-disconnect;
     }
 }
 chassis {
@@ -112,12 +112,97 @@ interfaces {
             family inet {
                 address 157.55.252.109/32;
                 address 158.55.252.109/32;
+                address 10.255.0.2/32;
             }
             family inet6 {
                 address abcd::20:0:0:2/128;
                 address abcd::20:0:0:4/128;
             }
         }
+    }
+}
+policy-options {
+    policy-statement bgp-to-ospf {
+        term 1 {
+            from protocol bgp;
+            then accept;
+        }
+        term 2 {
+            from protocol static;
+            then accept;
+        }
+    }
+    policy-statement import-route {
+        from instance master;
+    }
+    policy-statement lb {
+        term lb {
+            then {
+                load-balance per-packet;
+            }
+        }
+    }
+    policy-statement to-fr-bgp {
+        term 2 {
+            from protocol ospf;
+            then accept;
+        }
+    }
+}
+routing-instances {
+    vpnA {
+        routing-options {
+            static {
+                route 100.1.0.0/24 {
+                    next-hop [ 10.254.3.229 10.254.4.229 ];
+                    resolve;
+                    longest-match;
+                }
+                route 0.0.0.0/0 next-table inet.0;
+            }
+        }
+        protocols {
+            ospf {
+                area 0.0.0.0 {
+                    interface ge-0/0/4.0;
+                }
+                export bgp-to-ospf;
+            }
+            bgp {
+                group ebgp {
+                    export to-fr-bgp;
+                    local-as 100;
+                    neighbor 10.254.3.229 {
+                        peer-as 200;
+                    }
+                    neighbor 10.254.4.229 {
+                        peer-as 200;
+                    }
+                }
+            }
+        }
+        description "Fast Path Customer";
+        instance-type virtual-router;
+        interface ge-0/0/4.0;
+        interface fti0.48;
+        interface fti0.49;
+    }
+    vpnB {
+        routing-options {
+            static {
+                route 0.0.0.0/0 next-table inet.0;
+            }
+        }
+        protocols {
+            ospf {
+                area 0.0.0.0 {
+                    interface ge-0/0/5.0;
+                }
+            }
+        }
+        description "Private Link Customer";
+        instance-type virtual-router;
+        interface ge-0/0/5.0;
     }
 }
 routing-options {
@@ -144,68 +229,4 @@ protocols {
         }
     }
 }
-policy-options {
-    policy-statement bgp-to-ospf {
-        term 1 {
-            from protocol bgp;
-            then accept;
-        }
-        term 2 {
-            from protocol static;
-            then accept;
-        }
-    }
-    policy-statement lb {
-        term lb {
-            then {
-                load-balance per-packet;
-            }
-        }
-    }
-    policy-statement to-fr-bgp {
-        term 2 {
-            from protocol ospf;
-            then accept;
-        }
-    }
-}
-routing-instances {
-    vpnA {
-        instance-type vrf;
-        interface ge-0/0/4.0;
-        interface ge-0/0/5.0;
-        interface fti0.48;
-        interface fti0.49;
-        route-distinguisher 100:1;
-        vrf-target target:100:1;
-        routing-options {
-            static {
-                route 100.1.0.0/24 {
-                    next-hop [ 10.254.3.229 10.254.4.229 ];
-                    resolve;
-                    longest-match;
-                }
-            }
-        }
-        protocols {
-            bgp {
-                group ebgp {
-                    export to-fr-bgp;
-                    local-as 100;
-                    neighbor 10.254.3.229 {
-                        peer-as 200;
-                    }
-                    neighbor 10.254.4.229 {
-                        peer-as 200;
-                    }
-                }
-            }
-            ospf {
-                export bgp-to-ospf;
-                area 0.0.0.0 {
-                    interface ge-0/0/4.0;
-                }
-            }
-        }
-    }
-}
+

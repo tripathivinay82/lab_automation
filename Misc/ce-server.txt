@@ -1,12 +1,12 @@
 system {
     host-name CE-Server;
-    ports {
-        console log-out-on-disconnect;
-    }
     services {
         netconf {
             ssh;
         }
+    }
+    ports {
+        console log-out-on-disconnect;
     }
 }
 interfaces {
@@ -48,7 +48,35 @@ interfaces {
                 address 12.200.1.1/32;
                 address 12.200.1.2/32;
             }
+            family inet6 {
+                address ::12.200.1.1/128;
+            }
         }
+        unit 1 {
+            family inet {
+                address 14.200.1.1/32;
+            }
+        }
+    }
+}                                       
+routing-instances {
+    PrivateLink {
+        routing-options {
+            static {
+                route 0.0.0.0/0 next-hop 11.100.1.1;
+            }
+        }
+        protocols {
+            ospf {
+                area 0.0.0.0 {
+                    interface ge-0/0/1.0;
+                    interface lo0.1;
+                }
+            }
+        }
+        instance-type virtual-router;
+        interface ge-0/0/1.0;
+        interface lo0.1;
     }
 }
 protocols {

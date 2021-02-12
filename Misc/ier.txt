@@ -23,8 +23,8 @@ interfaces {
             802.3ad ae2;
         }
     }
-    ge-0/0/1 {
-        description "to EXR ge-0/0/5";
+    xe-1/3/0 {
+        description "to EXR xe-1/3/0";
         gigether-options {
             802.3ad ae1;
         }
@@ -90,6 +90,9 @@ interfaces {
 routing-options {
     router-id 131.1.1.1;
     autonomous-system 8075;
+    forwarding-table {
+        export lb;
+    }
 }
 protocols {
     ospf {
@@ -113,4 +116,10 @@ protocols {
         }
     }
 }
-
+policy-options {
+    policy-statement lb {
+        then {
+            load-balance per-packet;
+        }
+    }
+}

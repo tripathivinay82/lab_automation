@@ -1,12 +1,12 @@
 system {
     host-name CE-Customer;
-    ports {
-        console log-out-on-disconnect;
-    }
     services {
         netconf {
             ssh;
         }
+    }
+    ports {
+        console log-out-on-disconnect;
     }
 }
 chassis {
@@ -31,6 +31,16 @@ interfaces {
                 address ::10.254.4.29/64;
             }
         }
+        unit 39 {
+            description "MSEE to service provider 1005 link";
+            vlan-tags outer 36 inner 1005;
+            family inet {
+                address 10.250.1.1/24;
+            }
+            family inet6 {
+                address ::10.250.1.1/64;
+            }
+        }
     }
     ge-0/0/1 {
         description "to EXR ge-0/0/1.0";
@@ -48,7 +58,7 @@ interfaces {
             vlan-id 2;
             family inet {
                 address 100.1.1.1/24;
-            }
+            }                           
         }
     }
     lo0 {
@@ -58,6 +68,31 @@ interfaces {
                 address 11.200.1.2/32;
             }
         }
+        unit 1 {
+            family inet {
+                address 13.200.1.1/32;
+            }
+        }
+    }
+}
+routing-instances {
+    PrivateLink {
+        routing-options {
+            static {
+                route 0.0.0.0/0 next-hop 10.250.1.2;
+            }
+        }
+        protocols {
+            ospf {
+                area 0.0.0.0 {
+                    interface lo0.1;
+                    interface ge-0/0/0.39;
+                }
+            }
+        }
+        instance-type virtual-router;
+        interface ge-0/0/0.39;
+        interface lo0.1;
     }
 }
 protocols {
