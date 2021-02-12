@@ -1,0 +1,44 @@
+{
+  "routes": [
+    {
+      "nexthop": {
+        "gateways": [
+          {
+            "flexibleTunnelProfile": {
+              "action": "TRANSLATE",
+              "attributes": {
+                "translate": {
+                  "ipv6_ipv4_xlate": {
+                                    "source_params": {
+                                          "ipv6_ipv4_strip_msb": {
+                                            }
+                                     },
+                                    "dest_params": {
+                                          "ipv6_ipv4_strip_msb": {
+                                          }
+                                    } 
+                   },
+                   "target_vrf_name": "vpnB"
+                } 
+              }
+            }
+          } 
+        ]
+      }, 
+      "key": {
+        "destPrefixLen": 128, 
+        "table": {
+          "rtt_name": {
+            "name": "vpnB.inet6.0"
+          }
+        }, 
+        "destPrefix": {
+          "inet6": {
+            "addrString": "::13.200.1.1"
+          }
+        }, 
+        "cookie": "1"
+      }
+    }
+ ]
+}

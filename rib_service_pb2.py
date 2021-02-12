@@ -22,7 +22,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='routing',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x11rib_service.proto\x12\x07routing\x1a\x0ejnx_addr.proto\x1a\x11prpd_common.proto\x1a\x1d\x66lexible_tunnel_profile.proto\"%\n\x14RouteAttributeUint32\x12\r\n\x05value\x18\x01 \x01(\r\"\x8d\x01\n\x10RouteMatchFields\x12,\n\x0b\x64\x65st_prefix\x18\x01 \x01(\x0b\x32\x17.routing.NetworkAddress\x12\x17\n\x0f\x64\x65st_prefix_len\x18\x02 \x01(\r\x12\"\n\x05table\x18\x03 \x01(\x0b\x32\x13.routing.RouteTable\x12\x0e\n\x06\x63ookie\x18\x04 \x01(\x04\"\xa1\x01\n\x18RouteExtendedMatchFields\x12\x39\n\x04tags\x18\x01 \x03(\x0b\x32+.routing.RouteExtendedMatchFields.TagsEntry\x1aJ\n\tTagsEntry\x12\x0b\n\x03key\x18\x01 \x01(\r\x12,\n\x05value\x18\x02 \x01(\x0b\x32\x1d.routing.RouteAttributeUint32:\x02\x38\x01\"\x96\x02\n\x0cRouteGateway\x12\x30\n\x0fgateway_address\x18\x01 \x01(\x0b\x32\x17.routing.NetworkAddress\x12\x16\n\x0einterface_name\x18\x02 \x01(\t\x12.\n\rlocal_address\x18\x03 \x01(\x0b\x32\x17.routing.NetworkAddress\x12(\n\x0blabel_stack\x18\x04 \x01(\x0b\x32\x13.routing.LabelStack\x12?\n\x17\x66lexible_tunnel_profile\x18\x05 \x01(\x0b\x32\x1e.routing.FlexibleTunnelProfile\x12\x11\n\tbandwidth\x18\x06 \x01(\x02\x12\x0e\n\x06weight\x18\x07 \x01(\r\"7\n\x0cRouteNexthop\x12\'\n\x08gateways\x18\x01 \x03(\x0b\x32\x15.routing.RouteGateway\"\xbc\x03\n\x0fRouteAttributes\x12>\n\x0bpreferences\x18\x01 \x03(\x0b\x32).routing.RouteAttributes.PreferencesEntry\x12\x30\n\x04tags\x18\x02 \x03(\x0b\x32\".routing.RouteAttributes.TagsEntry\x12\x34\n\x06\x63olors\x18\x03 \x03(\x0b\x32$.routing.RouteAttributes.ColorsEntry\x12\x14\n\x0cno_advertise\x18\x04 \x01(\x08\x1aQ\n\x10PreferencesEntry\x12\x0b\n\x03key\x18\x01 \x01(\r\x12,\n\x05value\x18\x02 \x01(\x0b\x32\x1d.routing.RouteAttributeUint32:\x02\x38\x01\x1aJ\n\tTagsEntry\x12\x0b\n\x03key\x18\x01 \x01(\r\x12,\n\x05value\x18\x02 \x01(\x0b\x32\x1d.routing.RouteAttributeUint32:\x02\x38\x01\x1aL\n\x0b\x43olorsEntry\x12\x0b\n\x03key\x18\x01 \x01(\r\x12,\n\x05value\x18\x02 \x01(\x0b\x32\x1d.routing.RouteAttributeUint32:\x02\x38\x01\"\xb5\x01\n\nRouteEntry\x12&\n\x03key\x18\x01 \x01(\x0b\x32\x19.routing.RouteMatchFields\x12&\n\x07nexthop\x18\x02 \x01(\x0b\x32\x15.routing.RouteNexthop\x12)\n\x08protocol\x18\x03 \x01(\x0e\x32\x17.routing.RouteProtoType\x12,\n\nattributes\x18\x04 \x01(\x0b\x32\x18.routing.RouteAttributes\"9\n\x12RouteUpdateRequest\x12#\n\x06routes\x18\x01 \x03(\x0b\x32\x13.routing.RouteEntry\"=\n\x12RouteRemoveRequest\x12\'\n\x04keys\x18\x01 \x03(\x0b\x32\x19.routing.RouteMatchFields\"\xac\x01\n\x1aRouteRemoveMatchingRequest\x12&\n\x03key\x18\x01 \x01(\x0b\x32\x19.routing.RouteMatchFields\x12\x39\n\x0e\x65xtended_match\x18\x02 \x01(\x0b\x32!.routing.RouteExtendedMatchFields\x12+\n\nmatch_type\x18\x03 \x01(\x0e\x32\x17.routing.RouteMatchType\"\xb8\x02\n\x0fRouteGetRequest\x12&\n\x03key\x18\x01 \x01(\x0b\x32\x19.routing.RouteMatchFields\x12+\n\nmatch_type\x18\x02 \x01(\x0e\x32\x17.routing.RouteMatchType\x12\x13\n\x0b\x61\x63tive_only\x18\x03 \x01(\x08\x12\x34\n\x14reply_address_format\x18\x04 \x01(\x0e\x32\x16.jnxBase.AddressFormat\x12\x35\n\x12reply_table_format\x18\x05 \x01(\x0e\x32\x19.routing.RouteTableFormat\x12\x13\n\x0broute_count\x18\x06 \x01(\r\x12\x39\n\x0e\x65xtended_match\x18\x07 \x01(\x0b\x32!.routing.RouteExtendedMatchFields\"X\n\x0eRouteOperReply\x12(\n\x06status\x18\x01 \x01(\x0e\x32\x18.routing.RouteOperStatus\x12\x1c\n\x14operations_completed\x18\x02 \x01(\r\"^\n\rRouteGetReply\x12(\n\x06status\x18\x01 \x01(\x0e\x32\x18.routing.RouteOperStatus\x12#\n\x06routes\x18\x02 \x03(\x0b\x32\x13.routing.RouteEntry\"/\n\x12RouteMonitorPolicy\x12\x19\n\x11rt_monitor_policy\x18\x01 \x01(\t\"\xda\x01\n\x14RouteMonitorRegFlags\x12\x13\n\x0brequest_eor\x18\x01 \x01(\x08\x12\x18\n\x10no_eor_to_client\x18\x02 \x01(\x08\x12\x1d\n\x15request_no_withdrawal\x18\x03 \x01(\x08\x12\x19\n\x11request_from_eswd\x18\x04 \x01(\x08\x12\x1d\n\x15request_from_mcsnoopd\x18\x05 \x01(\x08\x12\x1a\n\x12request_from_vrrpd\x18\x06 \x01(\x08\x12\x1e\n\x16request_force_re_notif\x18\x07 \x01(\x08\"\x95\x02\n\x16RouteMonitorRegRequest\x12,\n\x0brt_tbl_name\x18\x01 \x01(\x0b\x32\x17.routing.RouteTableName\x12+\n\nmonitor_op\x18\x02 \x01(\x0e\x32\x17.routing.RouteMonitorOp\x12\x33\n\x0cmonitor_flag\x18\x03 \x01(\x0b\x32\x1d.routing.RouteMonitorRegFlags\x12\x33\n\x0emonitor_policy\x18\x04 \x01(\x0b\x32\x1b.routing.RouteMonitorPolicy\x12\x13\n\x0bmonitor_ctx\x18\x05 \x01(\r\x12!\n\x19monitor_reply_route_count\x18\x06 \x01(\r\"l\n\x11RouteMonitorEntry\x12\x33\n\rmonitor_rt_op\x18\x01 \x01(\x0e\x32\x1c.routing.RouteMonitorRouteOp\x12\"\n\x05route\x18\x02 \x01(\x0b\x32\x13.routing.RouteEntry\"\xb4\x01\n\x11RouteMonitorReply\x12(\n\x06status\x18\x01 \x01(\x0e\x32\x18.routing.RouteOperStatus\x12\x13\n\x0bmonitor_ctx\x18\x02 \x01(\r\x12,\n\x0brt_tbl_name\x18\x03 \x01(\x0b\x32\x17.routing.RouteTableName\x12\x32\n\x0emonitor_routes\x18\x04 \x03(\x0b\x32\x1a.routing.RouteMonitorEntry*K\n\x0fWeightConstants\x12\x0f\n\x0bWEIGHT_NONE\x10\x00\x12\x12\n\x0eWEIGHT_PRIMARY\x10\x01\x12\x13\n\rWEIGHT_BACKUP\x10\x81\x80\x02*\xeb\x01\n\x0fRoutePreference\x12\x11\n\rRTPREF_DIRECT\x10\x00\x12\x11\n\rRTPREF_STATIC\x10\x05\x12\x0f\n\x0bRTPREF_OSPF\x10\n\x12\x17\n\x13RTPREF_LABELED_ISIS\x10\x0e\x12\x12\n\x0eRTPREF_ISIS_L1\x10\x0f\x12\x12\n\x0eRTPREF_ISIS_L2\x10\x12\x12\x0e\n\nRTPREF_RIP\x10\x64\x12\x10\n\x0cRTPREF_RIPNG\x10\x64\x12\x0f\n\x0bRTPREF_IGMP\x10s\x12\x14\n\x0fRTPREF_OSPF_ASE\x10\x96\x01\x12\x13\n\x0eRTPREF_BGP_EXT\x10\xaa\x01\x1a\x02\x10\x01*:\n\x0eRouteMatchType\x12\x08\n\x04\x42\x45ST\x10\x00\x12\t\n\x05\x45XACT\x10\x01\x12\x13\n\x0f\x45XACT_OR_LONGER\x10\x02*\xc3\x06\n\x0fRouteOperStatus\x12\x0b\n\x07SUCCESS\x10\x00\x12\x12\n\x0eINTERNAL_ERROR\x10\x01\x12\x13\n\x0fNOT_INITIALIZED\x10\x02\x12\t\n\x05NO_OP\x10\x03\x12\x10\n\x0cTOO_MANY_OPS\x10\x04\x12\x11\n\rTABLE_INVALID\x10\x05\x12\x13\n\x0fTABLE_NOT_READY\x10\x06\x12\x12\n\x0ePREFIX_INVALID\x10\x07\x12\x18\n\x14PREFIX_LEN_TOO_SHORT\x10\x08\x12\x17\n\x13PREFIX_LEN_TOO_LONG\x10\t\x12\x13\n\x0fGATEWAY_INVALID\x10\n\x12\x13\n\x0fNEXTHOP_INVALID\x10\x0b\x12\x1b\n\x17NEXTHOP_ADDRESS_INVALID\x10\x0c\x12\x18\n\x14NEXTHOP_LIMIT_EXCEED\x10\r\x12\x10\n\x0cROUTE_EXISTS\x10\x0e\x12\x13\n\x0fROUTE_NOT_FOUND\x10\x0f\x12\x14\n\x10PROTOCOL_INVALID\x10\x10\x12\x14\n\x10ROUTE_ADD_FAILED\x10\x11\x12\r\n\tNOT_READY\x10\x12\x12\r\n\tTRY_AGAIN\x10\x13\x12\x17\n\x13ROUTE_COUNT_INVALID\x10\x14\x12\x17\n\x13REQUEST_UNSUPPORTED\x10\x15\x12\x13\n\x0fREQUEST_INVALID\x10\x16\x12\x15\n\x11INTERFACE_INVALID\x10\x17\x12,\n(ROUTE_MONITOR_REGISTER_OPERATION_INVALID\x10\x18\x12!\n\x1dROUTE_MONITOR_REGISTER_ENOENT\x10\x19\x12)\n%ROUTE_MONITOR_REGISTER_POLICY_INVALID\x10\x1a\x12\x34\n0ROUTE_MONITOR_REGISTER_REPLY_ROUTE_COUNT_INVALID\x10\x1b\x12!\n\x1dROUTE_MONITOR_REGISTER_EXISTS\x10\x1c\x12\x16\n\x12MPLS_LABEL_INVALID\x10\x1d\x12\x17\n\x13MPLS_ACTION_INVALID\x10\x1e\x12\x1b\n\x17\x46LEXIBLE_TUNNEL_INVALID\x10\x1f\x12\x1b\n\x17\x42\x41NDWIDTH_USAGE_INVALID\x10 *J\n\x0eRouteMonitorOp\x12\x11\n\rREGISTER_NONE\x10\x00\x12\x10\n\x0cREGISTER_ADD\x10\x01\x12\x13\n\x0fREGISTER_DELETE\x10\x02*\xee\x01\n\x13RouteMonitorRouteOp\x12\x1f\n\x1bROUTE_MONITOR_ROUTE_OP_NONE\x10\x00\x12\x1e\n\x1aROUTE_MONITOR_ROUTE_OP_ADD\x10\x01\x12!\n\x1dROUTE_MONITOR_ROUTE_OP_MODIFY\x10\x02\x12!\n\x1dROUTE_MONITOR_ROUTE_OP_DELETE\x10\x03\x12\'\n#ROUTE_MONITOR_ROUTE_OP_NO_ADVERTISE\x10\x04\x12\'\n#ROUTE_MONITOR_ROUTE_OP_END_OF_TABLE\x10\x05\x32\x90\x04\n\x03Rib\x12\x42\n\x08RouteAdd\x12\x1b.routing.RouteUpdateRequest\x1a\x17.routing.RouteOperReply\"\x00\x12\x45\n\x0bRouteModify\x12\x1b.routing.RouteUpdateRequest\x1a\x17.routing.RouteOperReply\"\x00\x12\x45\n\x0bRouteUpdate\x12\x1b.routing.RouteUpdateRequest\x1a\x17.routing.RouteOperReply\"\x00\x12\x45\n\x0bRouteRemove\x12\x1b.routing.RouteRemoveRequest\x1a\x17.routing.RouteOperReply\"\x00\x12U\n\x13RouteRemoveMatching\x12#.routing.RouteRemoveMatchingRequest\x1a\x17.routing.RouteOperReply\"\x00\x12@\n\x08RouteGet\x12\x18.routing.RouteGetRequest\x1a\x16.routing.RouteGetReply\"\x00\x30\x01\x12W\n\x14RouteMonitorRegister\x12\x1f.routing.RouteMonitorRegRequest\x1a\x1a.routing.RouteMonitorReply\"\x00\x30\x01\x62\x06proto3'
+  serialized_pb=b'\n\x11rib_service.proto\x12\x07routing\x1a\x0ejnx_addr.proto\x1a\x11prpd_common.proto\x1a\x1d\x66lexible_tunnel_profile.proto\"%\n\x14RouteAttributeUint32\x12\r\n\x05value\x18\x01 \x01(\r\"\x8d\x01\n\x10RouteMatchFields\x12,\n\x0b\x64\x65st_prefix\x18\x01 \x01(\x0b\x32\x17.routing.NetworkAddress\x12\x17\n\x0f\x64\x65st_prefix_len\x18\x02 \x01(\r\x12\"\n\x05table\x18\x03 \x01(\x0b\x32\x13.routing.RouteTable\x12\x0e\n\x06\x63ookie\x18\x04 \x01(\x04\"\xa1\x01\n\x18RouteExtendedMatchFields\x12\x39\n\x04tags\x18\x01 \x03(\x0b\x32+.routing.RouteExtendedMatchFields.TagsEntry\x1aJ\n\tTagsEntry\x12\x0b\n\x03key\x18\x01 \x01(\r\x12,\n\x05value\x18\x02 \x01(\x0b\x32\x1d.routing.RouteAttributeUint32:\x02\x38\x01\"\x96\x02\n\x0cRouteGateway\x12\x30\n\x0fgateway_address\x18\x01 \x01(\x0b\x32\x17.routing.NetworkAddress\x12\x16\n\x0einterface_name\x18\x02 \x01(\t\x12.\n\rlocal_address\x18\x03 \x01(\x0b\x32\x17.routing.NetworkAddress\x12(\n\x0blabel_stack\x18\x04 \x01(\x0b\x32\x13.routing.LabelStack\x12?\n\x17\x66lexible_tunnel_profile\x18\x05 \x01(\x0b\x32\x1e.routing.FlexibleTunnelProfile\x12\x11\n\tbandwidth\x18\x06 \x01(\x02\x12\x0e\n\x06weight\x18\x07 \x01(\r\"7\n\x0cRouteNexthop\x12\'\n\x08gateways\x18\x01 \x03(\x0b\x32\x15.routing.RouteGateway\"\xc3\x04\n\x0fRouteAttributes\x12>\n\x0bpreferences\x18\x01 \x03(\x0b\x32).routing.RouteAttributes.PreferencesEntry\x12\x30\n\x04tags\x18\x02 \x03(\x0b\x32\".routing.RouteAttributes.TagsEntry\x12\x34\n\x06\x63olors\x18\x03 \x03(\x0b\x32$.routing.RouteAttributes.ColorsEntry\x12\x14\n\x0cno_advertise\x18\x04 \x01(\x08\x12\x36\n\x07metrics\x18\x05 \x03(\x0b\x32%.routing.RouteAttributes.MetricsEntry\x1aQ\n\x10PreferencesEntry\x12\x0b\n\x03key\x18\x01 \x01(\r\x12,\n\x05value\x18\x02 \x01(\x0b\x32\x1d.routing.RouteAttributeUint32:\x02\x38\x01\x1aJ\n\tTagsEntry\x12\x0b\n\x03key\x18\x01 \x01(\r\x12,\n\x05value\x18\x02 \x01(\x0b\x32\x1d.routing.RouteAttributeUint32:\x02\x38\x01\x1aL\n\x0b\x43olorsEntry\x12\x0b\n\x03key\x18\x01 \x01(\r\x12,\n\x05value\x18\x02 \x01(\x0b\x32\x1d.routing.RouteAttributeUint32:\x02\x38\x01\x1aM\n\x0cMetricsEntry\x12\x0b\n\x03key\x18\x01 \x01(\r\x12,\n\x05value\x18\x02 \x01(\x0b\x32\x1d.routing.RouteAttributeUint32:\x02\x38\x01\"\xb5\x01\n\nRouteEntry\x12&\n\x03key\x18\x01 \x01(\x0b\x32\x19.routing.RouteMatchFields\x12&\n\x07nexthop\x18\x02 \x01(\x0b\x32\x15.routing.RouteNexthop\x12)\n\x08protocol\x18\x03 \x01(\x0e\x32\x17.routing.RouteProtoType\x12,\n\nattributes\x18\x04 \x01(\x0b\x32\x18.routing.RouteAttributes\"9\n\x12RouteUpdateRequest\x12#\n\x06routes\x18\x01 \x03(\x0b\x32\x13.routing.RouteEntry\"=\n\x12RouteRemoveRequest\x12\'\n\x04keys\x18\x01 \x03(\x0b\x32\x19.routing.RouteMatchFields\"\xac\x01\n\x1aRouteRemoveMatchingRequest\x12&\n\x03key\x18\x01 \x01(\x0b\x32\x19.routing.RouteMatchFields\x12\x39\n\x0e\x65xtended_match\x18\x02 \x01(\x0b\x32!.routing.RouteExtendedMatchFields\x12+\n\nmatch_type\x18\x03 \x01(\x0e\x32\x17.routing.RouteMatchType\"\xb8\x02\n\x0fRouteGetRequest\x12&\n\x03key\x18\x01 \x01(\x0b\x32\x19.routing.RouteMatchFields\x12+\n\nmatch_type\x18\x02 \x01(\x0e\x32\x17.routing.RouteMatchType\x12\x13\n\x0b\x61\x63tive_only\x18\x03 \x01(\x08\x12\x34\n\x14reply_address_format\x18\x04 \x01(\x0e\x32\x16.jnxBase.AddressFormat\x12\x35\n\x12reply_table_format\x18\x05 \x01(\x0e\x32\x19.routing.RouteTableFormat\x12\x13\n\x0broute_count\x18\x06 \x01(\r\x12\x39\n\x0e\x65xtended_match\x18\x07 \x01(\x0b\x32!.routing.RouteExtendedMatchFields\"X\n\x0eRouteOperReply\x12(\n\x06status\x18\x01 \x01(\x0e\x32\x18.routing.RouteOperStatus\x12\x1c\n\x14operations_completed\x18\x02 \x01(\r\"^\n\rRouteGetReply\x12(\n\x06status\x18\x01 \x01(\x0e\x32\x18.routing.RouteOperStatus\x12#\n\x06routes\x18\x02 \x03(\x0b\x32\x13.routing.RouteEntry\"/\n\x12RouteMonitorPolicy\x12\x19\n\x11rt_monitor_policy\x18\x01 \x01(\t\"\xda\x01\n\x14RouteMonitorRegFlags\x12\x13\n\x0brequest_eor\x18\x01 \x01(\x08\x12\x18\n\x10no_eor_to_client\x18\x02 \x01(\x08\x12\x1d\n\x15request_no_withdrawal\x18\x03 \x01(\x08\x12\x19\n\x11request_from_eswd\x18\x04 \x01(\x08\x12\x1d\n\x15request_from_mcsnoopd\x18\x05 \x01(\x08\x12\x1a\n\x12request_from_vrrpd\x18\x06 \x01(\x08\x12\x1e\n\x16request_force_re_notif\x18\x07 \x01(\x08\"\x95\x02\n\x16RouteMonitorRegRequest\x12,\n\x0brt_tbl_name\x18\x01 \x01(\x0b\x32\x17.routing.RouteTableName\x12+\n\nmonitor_op\x18\x02 \x01(\x0e\x32\x17.routing.RouteMonitorOp\x12\x33\n\x0cmonitor_flag\x18\x03 \x01(\x0b\x32\x1d.routing.RouteMonitorRegFlags\x12\x33\n\x0emonitor_policy\x18\x04 \x01(\x0b\x32\x1b.routing.RouteMonitorPolicy\x12\x13\n\x0bmonitor_ctx\x18\x05 \x01(\r\x12!\n\x19monitor_reply_route_count\x18\x06 \x01(\r\"l\n\x11RouteMonitorEntry\x12\x33\n\rmonitor_rt_op\x18\x01 \x01(\x0e\x32\x1c.routing.RouteMonitorRouteOp\x12\"\n\x05route\x18\x02 \x01(\x0b\x32\x13.routing.RouteEntry\"\xb4\x01\n\x11RouteMonitorReply\x12(\n\x06status\x18\x01 \x01(\x0e\x32\x18.routing.RouteOperStatus\x12\x13\n\x0bmonitor_ctx\x18\x02 \x01(\r\x12,\n\x0brt_tbl_name\x18\x03 \x01(\x0b\x32\x17.routing.RouteTableName\x12\x32\n\x0emonitor_routes\x18\x04 \x03(\x0b\x32\x1a.routing.RouteMonitorEntry*K\n\x0fWeightConstants\x12\x0f\n\x0bWEIGHT_NONE\x10\x00\x12\x12\n\x0eWEIGHT_PRIMARY\x10\x01\x12\x13\n\rWEIGHT_BACKUP\x10\x81\x80\x02*\xeb\x01\n\x0fRoutePreference\x12\x11\n\rRTPREF_DIRECT\x10\x00\x12\x11\n\rRTPREF_STATIC\x10\x05\x12\x0f\n\x0bRTPREF_OSPF\x10\n\x12\x17\n\x13RTPREF_LABELED_ISIS\x10\x0e\x12\x12\n\x0eRTPREF_ISIS_L1\x10\x0f\x12\x12\n\x0eRTPREF_ISIS_L2\x10\x12\x12\x0e\n\nRTPREF_RIP\x10\x64\x12\x10\n\x0cRTPREF_RIPNG\x10\x64\x12\x0f\n\x0bRTPREF_IGMP\x10s\x12\x14\n\x0fRTPREF_OSPF_ASE\x10\x96\x01\x12\x13\n\x0eRTPREF_BGP_EXT\x10\xaa\x01\x1a\x02\x10\x01*:\n\x0eRouteMatchType\x12\x08\n\x04\x42\x45ST\x10\x00\x12\t\n\x05\x45XACT\x10\x01\x12\x13\n\x0f\x45XACT_OR_LONGER\x10\x02*\xc3\x06\n\x0fRouteOperStatus\x12\x0b\n\x07SUCCESS\x10\x00\x12\x12\n\x0eINTERNAL_ERROR\x10\x01\x12\x13\n\x0fNOT_INITIALIZED\x10\x02\x12\t\n\x05NO_OP\x10\x03\x12\x10\n\x0cTOO_MANY_OPS\x10\x04\x12\x11\n\rTABLE_INVALID\x10\x05\x12\x13\n\x0fTABLE_NOT_READY\x10\x06\x12\x12\n\x0ePREFIX_INVALID\x10\x07\x12\x18\n\x14PREFIX_LEN_TOO_SHORT\x10\x08\x12\x17\n\x13PREFIX_LEN_TOO_LONG\x10\t\x12\x13\n\x0fGATEWAY_INVALID\x10\n\x12\x13\n\x0fNEXTHOP_INVALID\x10\x0b\x12\x1b\n\x17NEXTHOP_ADDRESS_INVALID\x10\x0c\x12\x18\n\x14NEXTHOP_LIMIT_EXCEED\x10\r\x12\x10\n\x0cROUTE_EXISTS\x10\x0e\x12\x13\n\x0fROUTE_NOT_FOUND\x10\x0f\x12\x14\n\x10PROTOCOL_INVALID\x10\x10\x12\x14\n\x10ROUTE_ADD_FAILED\x10\x11\x12\r\n\tNOT_READY\x10\x12\x12\r\n\tTRY_AGAIN\x10\x13\x12\x17\n\x13ROUTE_COUNT_INVALID\x10\x14\x12\x17\n\x13REQUEST_UNSUPPORTED\x10\x15\x12\x13\n\x0fREQUEST_INVALID\x10\x16\x12\x15\n\x11INTERFACE_INVALID\x10\x17\x12,\n(ROUTE_MONITOR_REGISTER_OPERATION_INVALID\x10\x18\x12!\n\x1dROUTE_MONITOR_REGISTER_ENOENT\x10\x19\x12)\n%ROUTE_MONITOR_REGISTER_POLICY_INVALID\x10\x1a\x12\x34\n0ROUTE_MONITOR_REGISTER_REPLY_ROUTE_COUNT_INVALID\x10\x1b\x12!\n\x1dROUTE_MONITOR_REGISTER_EXISTS\x10\x1c\x12\x16\n\x12MPLS_LABEL_INVALID\x10\x1d\x12\x17\n\x13MPLS_ACTION_INVALID\x10\x1e\x12\x1b\n\x17\x46LEXIBLE_TUNNEL_INVALID\x10\x1f\x12\x1b\n\x17\x42\x41NDWIDTH_USAGE_INVALID\x10 *J\n\x0eRouteMonitorOp\x12\x11\n\rREGISTER_NONE\x10\x00\x12\x10\n\x0cREGISTER_ADD\x10\x01\x12\x13\n\x0fREGISTER_DELETE\x10\x02*\xee\x01\n\x13RouteMonitorRouteOp\x12\x1f\n\x1bROUTE_MONITOR_ROUTE_OP_NONE\x10\x00\x12\x1e\n\x1aROUTE_MONITOR_ROUTE_OP_ADD\x10\x01\x12!\n\x1dROUTE_MONITOR_ROUTE_OP_MODIFY\x10\x02\x12!\n\x1dROUTE_MONITOR_ROUTE_OP_DELETE\x10\x03\x12\'\n#ROUTE_MONITOR_ROUTE_OP_NO_ADVERTISE\x10\x04\x12\'\n#ROUTE_MONITOR_ROUTE_OP_END_OF_TABLE\x10\x05\x32\x90\x04\n\x03Rib\x12\x42\n\x08RouteAdd\x12\x1b.routing.RouteUpdateRequest\x1a\x17.routing.RouteOperReply\"\x00\x12\x45\n\x0bRouteModify\x12\x1b.routing.RouteUpdateRequest\x1a\x17.routing.RouteOperReply\"\x00\x12\x45\n\x0bRouteUpdate\x12\x1b.routing.RouteUpdateRequest\x1a\x17.routing.RouteOperReply\"\x00\x12\x45\n\x0bRouteRemove\x12\x1b.routing.RouteRemoveRequest\x1a\x17.routing.RouteOperReply\"\x00\x12U\n\x13RouteRemoveMatching\x12#.routing.RouteRemoveMatchingRequest\x1a\x17.routing.RouteOperReply\"\x00\x12@\n\x08RouteGet\x12\x18.routing.RouteGetRequest\x1a\x16.routing.RouteGetReply\"\x00\x30\x01\x12W\n\x14RouteMonitorRegister\x12\x1f.routing.RouteMonitorRegRequest\x1a\x1a.routing.RouteMonitorReply\"\x00\x30\x01\x62\x06proto3'
   ,
   dependencies=[jnx__addr__pb2.DESCRIPTOR,prpd__common__pb2.DESCRIPTOR,flexible__tunnel__profile__pb2.DESCRIPTOR,])
 
@@ -47,8 +47,8 @@ _WEIGHTCONSTANTS = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=3053,
-  serialized_end=3128,
+  serialized_start=3188,
+  serialized_end=3263,
 )
 _sym_db.RegisterEnumDescriptor(_WEIGHTCONSTANTS)
 
@@ -106,8 +106,8 @@ _ROUTEPREFERENCE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=b'\020\001',
-  serialized_start=3131,
-  serialized_end=3366,
+  serialized_start=3266,
+  serialized_end=3501,
 )
 _sym_db.RegisterEnumDescriptor(_ROUTEPREFERENCE)
 
@@ -133,8 +133,8 @@ _ROUTEMATCHTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=3368,
-  serialized_end=3426,
+  serialized_start=3503,
+  serialized_end=3561,
 )
 _sym_db.RegisterEnumDescriptor(_ROUTEMATCHTYPE)
 
@@ -280,8 +280,8 @@ _ROUTEOPERSTATUS = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=3429,
-  serialized_end=4264,
+  serialized_start=3564,
+  serialized_end=4399,
 )
 _sym_db.RegisterEnumDescriptor(_ROUTEOPERSTATUS)
 
@@ -307,8 +307,8 @@ _ROUTEMONITOROP = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=4266,
-  serialized_end=4340,
+  serialized_start=4401,
+  serialized_end=4475,
 )
 _sym_db.RegisterEnumDescriptor(_ROUTEMONITOROP)
 
@@ -346,8 +346,8 @@ _ROUTEMONITORROUTEOP = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=4343,
-  serialized_end=4581,
+  serialized_start=4478,
+  serialized_end=4716,
 )
 _sym_db.RegisterEnumDescriptor(_ROUTEMONITORROUTEOP)
 
@@ -702,8 +702,8 @@ _ROUTEATTRIBUTES_PREFERENCESENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=991,
-  serialized_end=1072,
+  serialized_start=1047,
+  serialized_end=1128,
 )
 
 _ROUTEATTRIBUTES_TAGSENTRY = _descriptor.Descriptor(
@@ -776,8 +776,45 @@ _ROUTEATTRIBUTES_COLORSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1150,
-  serialized_end=1226,
+  serialized_start=1206,
+  serialized_end=1282,
+)
+
+_ROUTEATTRIBUTES_METRICSENTRY = _descriptor.Descriptor(
+  name='MetricsEntry',
+  full_name='routing.RouteAttributes.MetricsEntry',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='key', full_name='routing.RouteAttributes.MetricsEntry.key', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='value', full_name='routing.RouteAttributes.MetricsEntry.value', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=b'8\001',
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1284,
+  serialized_end=1361,
 )
 
 _ROUTEATTRIBUTES = _descriptor.Descriptor(
@@ -815,10 +852,17 @@ _ROUTEATTRIBUTES = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='metrics', full_name='routing.RouteAttributes.metrics', index=4,
+      number=5, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
-  nested_types=[_ROUTEATTRIBUTES_PREFERENCESENTRY, _ROUTEATTRIBUTES_TAGSENTRY, _ROUTEATTRIBUTES_COLORSENTRY, ],
+  nested_types=[_ROUTEATTRIBUTES_PREFERENCESENTRY, _ROUTEATTRIBUTES_TAGSENTRY, _ROUTEATTRIBUTES_COLORSENTRY, _ROUTEATTRIBUTES_METRICSENTRY, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -828,7 +872,7 @@ _ROUTEATTRIBUTES = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=782,
-  serialized_end=1226,
+  serialized_end=1361,
 )
 
 
@@ -879,8 +923,8 @@ _ROUTEENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1229,
-  serialized_end=1410,
+  serialized_start=1364,
+  serialized_end=1545,
 )
 
 
@@ -910,8 +954,8 @@ _ROUTEUPDATEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1412,
-  serialized_end=1469,
+  serialized_start=1547,
+  serialized_end=1604,
 )
 
 
@@ -941,8 +985,8 @@ _ROUTEREMOVEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1471,
-  serialized_end=1532,
+  serialized_start=1606,
+  serialized_end=1667,
 )
 
 
@@ -986,8 +1030,8 @@ _ROUTEREMOVEMATCHINGREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1535,
-  serialized_end=1707,
+  serialized_start=1670,
+  serialized_end=1842,
 )
 
 
@@ -1059,8 +1103,8 @@ _ROUTEGETREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1710,
-  serialized_end=2022,
+  serialized_start=1845,
+  serialized_end=2157,
 )
 
 
@@ -1097,8 +1141,8 @@ _ROUTEOPERREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2024,
-  serialized_end=2112,
+  serialized_start=2159,
+  serialized_end=2247,
 )
 
 
@@ -1135,8 +1179,8 @@ _ROUTEGETREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2114,
-  serialized_end=2208,
+  serialized_start=2249,
+  serialized_end=2343,
 )
 
 
@@ -1166,8 +1210,8 @@ _ROUTEMONITORPOLICY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2210,
-  serialized_end=2257,
+  serialized_start=2345,
+  serialized_end=2392,
 )
 
 
@@ -1239,8 +1283,8 @@ _ROUTEMONITORREGFLAGS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2260,
-  serialized_end=2478,
+  serialized_start=2395,
+  serialized_end=2613,
 )
 
 
@@ -1305,8 +1349,8 @@ _ROUTEMONITORREGREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2481,
-  serialized_end=2758,
+  serialized_start=2616,
+  serialized_end=2893,
 )
 
 
@@ -1343,8 +1387,8 @@ _ROUTEMONITORENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2760,
-  serialized_end=2868,
+  serialized_start=2895,
+  serialized_end=3003,
 )
 
 
@@ -1395,8 +1439,8 @@ _ROUTEMONITORREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2871,
-  serialized_end=3051,
+  serialized_start=3006,
+  serialized_end=3186,
 )
 
 _ROUTEMATCHFIELDS.fields_by_name['dest_prefix'].message_type = prpd__common__pb2._NETWORKADDRESS
@@ -1415,9 +1459,12 @@ _ROUTEATTRIBUTES_TAGSENTRY.fields_by_name['value'].message_type = _ROUTEATTRIBUT
 _ROUTEATTRIBUTES_TAGSENTRY.containing_type = _ROUTEATTRIBUTES
 _ROUTEATTRIBUTES_COLORSENTRY.fields_by_name['value'].message_type = _ROUTEATTRIBUTEUINT32
 _ROUTEATTRIBUTES_COLORSENTRY.containing_type = _ROUTEATTRIBUTES
+_ROUTEATTRIBUTES_METRICSENTRY.fields_by_name['value'].message_type = _ROUTEATTRIBUTEUINT32
+_ROUTEATTRIBUTES_METRICSENTRY.containing_type = _ROUTEATTRIBUTES
 _ROUTEATTRIBUTES.fields_by_name['preferences'].message_type = _ROUTEATTRIBUTES_PREFERENCESENTRY
 _ROUTEATTRIBUTES.fields_by_name['tags'].message_type = _ROUTEATTRIBUTES_TAGSENTRY
 _ROUTEATTRIBUTES.fields_by_name['colors'].message_type = _ROUTEATTRIBUTES_COLORSENTRY
+_ROUTEATTRIBUTES.fields_by_name['metrics'].message_type = _ROUTEATTRIBUTES_METRICSENTRY
 _ROUTEENTRY.fields_by_name['key'].message_type = _ROUTEMATCHFIELDS
 _ROUTEENTRY.fields_by_name['nexthop'].message_type = _ROUTENEXTHOP
 _ROUTEENTRY.fields_by_name['protocol'].enum_type = prpd__common__pb2._ROUTEPROTOTYPE
@@ -1535,6 +1582,13 @@ RouteAttributes = _reflection.GeneratedProtocolMessageType('RouteAttributes', (_
     # @@protoc_insertion_point(class_scope:routing.RouteAttributes.ColorsEntry)
     })
   ,
+
+  'MetricsEntry' : _reflection.GeneratedProtocolMessageType('MetricsEntry', (_message.Message,), {
+    'DESCRIPTOR' : _ROUTEATTRIBUTES_METRICSENTRY,
+    '__module__' : 'rib_service_pb2'
+    # @@protoc_insertion_point(class_scope:routing.RouteAttributes.MetricsEntry)
+    })
+  ,
   'DESCRIPTOR' : _ROUTEATTRIBUTES,
   '__module__' : 'rib_service_pb2'
   # @@protoc_insertion_point(class_scope:routing.RouteAttributes)
@@ -1543,6 +1597,7 @@ _sym_db.RegisterMessage(RouteAttributes)
 _sym_db.RegisterMessage(RouteAttributes.PreferencesEntry)
 _sym_db.RegisterMessage(RouteAttributes.TagsEntry)
 _sym_db.RegisterMessage(RouteAttributes.ColorsEntry)
+_sym_db.RegisterMessage(RouteAttributes.MetricsEntry)
 
 RouteEntry = _reflection.GeneratedProtocolMessageType('RouteEntry', (_message.Message,), {
   'DESCRIPTOR' : _ROUTEENTRY,
@@ -1634,6 +1689,7 @@ _ROUTEEXTENDEDMATCHFIELDS_TAGSENTRY._options = None
 _ROUTEATTRIBUTES_PREFERENCESENTRY._options = None
 _ROUTEATTRIBUTES_TAGSENTRY._options = None
 _ROUTEATTRIBUTES_COLORSENTRY._options = None
+_ROUTEATTRIBUTES_METRICSENTRY._options = None
 
 _RIB = _descriptor.ServiceDescriptor(
   name='Rib',
@@ -1641,8 +1697,8 @@ _RIB = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=4584,
-  serialized_end=5112,
+  serialized_start=4719,
+  serialized_end=5247,
   methods=[
   _descriptor.MethodDescriptor(
     name='RouteAdd',

@@ -1,0 +1,46 @@
+{
+  "routes": [
+    {
+      "nexthop": {
+        "gateways": [
+          {
+            "flexibleTunnelProfile": {
+	      "action": "ENCAPSULATE",
+              "attributes": {
+                "gre": {
+		   "source_prefix": {
+		     "inet": {
+		       "addr_string": "10.255.0.2"
+		     }
+		   },
+                   "destination_address": {
+                     "inet": {                    
+                       "addr_string": "10.255.0.1"
+                     }
+                   },
+                   "target_vrf_name": "vpnB",
+                   "gre_key":  100,
+                   "source_prefix_len": 32
+                } 
+	      }
+	    }
+	  } 
+        ]
+      }, 
+      "key": {
+        "destPrefixLen": 128, 
+        "table": {
+          "rtt_name": {
+            "name": "vpnB.inet6.0"
+          }
+        }, 
+        "destPrefix": {
+          "inet6": {
+            "addrString": "::13.200.1.1"
+          }
+        }, 
+        "cookie": "1"
+      }
+    }
+ ]
+}

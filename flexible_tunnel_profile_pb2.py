@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='routing',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x1d\x66lexible_tunnel_profile.proto\x12\x07routing\x1a\x0ejnx_addr.proto\x1a\x11prpd_common.proto\"\xb3\x03\n\x15VxlanTunnelAttributes\x12\x0b\n\x03vni\x18\x01 \x01(\r\x12.\n\rsource_prefix\x18\x02 \x01(\x0b\x32\x17.routing.NetworkAddress\x12\x19\n\x11source_prefix_len\x18\x03 \x01(\r\x12\x34\n\x15source_udp_port_range\x18\x04 \x01(\x0b\x32\x15.jnxBase.NumericRange\x12\'\n\nsource_mac\x18\x05 \x01(\x0b\x32\x13.jnxBase.MacAddress\x12\x34\n\x13\x64\x65stination_address\x18\x06 \x01(\x0b\x32\x17.routing.NetworkAddress\x12\x1c\n\x14\x64\x65stination_udp_port\x18\x07 \x01(\r\x12,\n\x0f\x64\x65stination_mac\x18\x08 \x01(\x0b\x32\x13.jnxBase.MacAddress\x12\r\n\x05\x66lags\x18\t \x01(\r\x12\x39\n\x10rfc7348_reserved\x18\n \x01(\x0b\x32\x1d.routing.Rfc7348VxlanReservedH\x00\x42\x17\n\x15vxlan_header_reserved\"O\n\x14Rfc7348VxlanReserved\x12\x1a\n\x12reserved_bits_8_31\x18\x01 \x01(\r\x12\x1b\n\x13reserved_bits_55_63\x18\x02 \x01(\r\"]\n\x10TunnelAttributes\x12/\n\x05vxlan\x18\x01 \x01(\x0b\x32\x1e.routing.VxlanTunnelAttributesH\x00\x42\x18\n\x16tunnel_attributes_type\"\x97\x01\n\x15\x46lexibleTunnelProfile\x12\x0c\n\x04name\x18\x01 \x01(\t\x12)\n\x06\x61\x63tion\x18\x02 \x01(\x0e\x32\x19.routing.TunnelActionType\x12\x16\n\x0einterface_name\x18\x03 \x01(\t\x12-\n\nattributes\x18\x04 \x01(\x0b\x32\x19.routing.TunnelAttributes*4\n\x10TunnelActionType\x12\x0f\n\x0b\x45NCAPSULATE\x10\x00\x12\x0f\n\x0b\x44\x45\x43\x41PSULATE\x10\x01\x62\x06proto3'
+  serialized_pb=b'\n\x1d\x66lexible_tunnel_profile.proto\x12\x07routing\x1a\x0ejnx_addr.proto\x1a\x11prpd_common.proto\"\xb3\x03\n\x15VxlanTunnelAttributes\x12\x0b\n\x03vni\x18\x01 \x01(\r\x12.\n\rsource_prefix\x18\x02 \x01(\x0b\x32\x17.routing.NetworkAddress\x12\x19\n\x11source_prefix_len\x18\x03 \x01(\r\x12\x34\n\x15source_udp_port_range\x18\x04 \x01(\x0b\x32\x15.jnxBase.NumericRange\x12\'\n\nsource_mac\x18\x05 \x01(\x0b\x32\x13.jnxBase.MacAddress\x12\x34\n\x13\x64\x65stination_address\x18\x06 \x01(\x0b\x32\x17.routing.NetworkAddress\x12\x1c\n\x14\x64\x65stination_udp_port\x18\x07 \x01(\r\x12,\n\x0f\x64\x65stination_mac\x18\x08 \x01(\x0b\x32\x13.jnxBase.MacAddress\x12\r\n\x05\x66lags\x18\t \x01(\r\x12\x39\n\x10rfc7348_reserved\x18\n \x01(\x0b\x32\x1d.routing.Rfc7348VxlanReservedH\x00\x42\x17\n\x15vxlan_header_reserved\"O\n\x14Rfc7348VxlanReserved\x12\x1a\n\x12reserved_bits_8_31\x18\x01 \x01(\r\x12\x1b\n\x13reserved_bits_55_63\x18\x02 \x01(\r\"\xf7\x01\n\x13GreTunnelAttributes\x12.\n\rsource_prefix\x18\x01 \x01(\x0b\x32\x17.routing.NetworkAddress\x12\x19\n\x11source_prefix_len\x18\x02 \x01(\r\x12\x34\n\x13\x64\x65stination_address\x18\x03 \x01(\x0b\x32\x17.routing.NetworkAddress\x12\x35\n\x14inner_source_address\x18\x04 \x01(\x0b\x32\x17.routing.NetworkAddress\x12\x0f\n\x07gre_key\x18\x05 \x01(\r\x12\x17\n\x0ftarget_vrf_name\x18\x06 \x01(\t\"<\n\x11Ipv4Ipv6MsbParams\x12\'\n\x0bipv6_prefix\x18\x01 \x01(\x0b\x32\x12.jnxBase.IpAddress\"@\n\x15Ipv4Ipv6MappingParams\x12\'\n\x0bipv6_prefix\x18\x01 \x01(\x0b\x32\x12.jnxBase.IpAddress\"\x12\n\x10Ipv6Ipv4StripMsb\"\x7f\n Ipv6Ipv4AddressTranslationParams\x12\x38\n\x13ipv6_ipv4_strip_msb\x18\x01 \x01(\x0b\x32\x19.routing.Ipv6Ipv4StripMsbH\x00\x42!\n\x1fIpv6Ipv4TranslationMethodParams\"\xb3\x01\n Ipv4Ipv6AddressTranslationParams\x12\x33\n\ripv4_ipv6_msb\x18\x01 \x01(\x0b\x32\x1a.routing.Ipv4Ipv6MsbParamsH\x00\x12\x37\n\ripv4_ipv6_map\x18\x02 \x01(\x0b\x32\x1e.routing.Ipv4Ipv6MappingParamsH\x00\x42!\n\x1fIpv4Ipv6TranslationMethodParams\"\x9d\x01\n\x19Ipv6Ipv4TranslationParams\x12@\n\rsource_params\x18\x01 \x01(\x0b\x32).routing.Ipv6Ipv4AddressTranslationParams\x12>\n\x0b\x64\x65st_params\x18\x02 \x01(\x0b\x32).routing.Ipv6Ipv4AddressTranslationParams\"\x9d\x01\n\x19Ipv4Ipv6TranslationParams\x12@\n\rsource_params\x18\x01 \x01(\x0b\x32).routing.Ipv4Ipv6AddressTranslationParams\x12>\n\x0b\x64\x65st_params\x18\x02 \x01(\x0b\x32).routing.Ipv4Ipv6AddressTranslationParams\"\xc7\x01\n\x15TranslationAttributes\x12=\n\x0fipv4_ipv6_xlate\x18\x01 \x01(\x0b\x32\".routing.Ipv4Ipv6TranslationParamsH\x00\x12=\n\x0fipv6_ipv4_xlate\x18\x02 \x01(\x0b\x32\".routing.Ipv6Ipv4TranslationParamsH\x00\x12\x17\n\x0ftarget_vrf_name\x18\x03 \x01(\tB\x17\n\x15translate_params_type\"\xbf\x01\n\x10TunnelAttributes\x12/\n\x05vxlan\x18\x01 \x01(\x0b\x32\x1e.routing.VxlanTunnelAttributesH\x00\x12+\n\x03gre\x18\x02 \x01(\x0b\x32\x1c.routing.GreTunnelAttributesH\x00\x12\x33\n\ttranslate\x18\x03 \x01(\x0b\x32\x1e.routing.TranslationAttributesH\x00\x42\x18\n\x16tunnel_attributes_type\"\x97\x01\n\x15\x46lexibleTunnelProfile\x12\x0c\n\x04name\x18\x01 \x01(\t\x12)\n\x06\x61\x63tion\x18\x02 \x01(\x0e\x32\x19.routing.TunnelActionType\x12\x16\n\x0einterface_name\x18\x03 \x01(\t\x12-\n\nattributes\x18\x04 \x01(\x0b\x32\x19.routing.TunnelAttributes*C\n\x10TunnelActionType\x12\x0f\n\x0b\x45NCAPSULATE\x10\x00\x12\x0f\n\x0b\x44\x45\x43\x41PSULATE\x10\x01\x12\r\n\tTRANSLATE\x10\x02\x62\x06proto3'
   ,
   dependencies=[jnx__addr__pb2.DESCRIPTOR,prpd__common__pb2.DESCRIPTOR,])
 
@@ -39,17 +39,22 @@ _TUNNELACTIONTYPE = _descriptor.EnumDescriptor(
       name='DECAPSULATE', index=1, number=1,
       serialized_options=None,
       type=None),
+    _descriptor.EnumValueDescriptor(
+      name='TRANSLATE', index=2, number=2,
+      serialized_options=None,
+      type=None),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=845,
-  serialized_end=897,
+  serialized_start=2175,
+  serialized_end=2242,
 )
 _sym_db.RegisterEnumDescriptor(_TUNNELACTIONTYPE)
 
 TunnelActionType = enum_type_wrapper.EnumTypeWrapper(_TUNNELACTIONTYPE)
 ENCAPSULATE = 0
 DECAPSULATE = 1
+TRANSLATE = 2
 
 
 
@@ -188,6 +193,357 @@ _RFC7348VXLANRESERVED = _descriptor.Descriptor(
 )
 
 
+_GRETUNNELATTRIBUTES = _descriptor.Descriptor(
+  name='GreTunnelAttributes',
+  full_name='routing.GreTunnelAttributes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='source_prefix', full_name='routing.GreTunnelAttributes.source_prefix', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='source_prefix_len', full_name='routing.GreTunnelAttributes.source_prefix_len', index=1,
+      number=2, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='destination_address', full_name='routing.GreTunnelAttributes.destination_address', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='inner_source_address', full_name='routing.GreTunnelAttributes.inner_source_address', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='gre_key', full_name='routing.GreTunnelAttributes.gre_key', index=4,
+      number=5, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='target_vrf_name', full_name='routing.GreTunnelAttributes.target_vrf_name', index=5,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=597,
+  serialized_end=844,
+)
+
+
+_IPV4IPV6MSBPARAMS = _descriptor.Descriptor(
+  name='Ipv4Ipv6MsbParams',
+  full_name='routing.Ipv4Ipv6MsbParams',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='ipv6_prefix', full_name='routing.Ipv4Ipv6MsbParams.ipv6_prefix', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=846,
+  serialized_end=906,
+)
+
+
+_IPV4IPV6MAPPINGPARAMS = _descriptor.Descriptor(
+  name='Ipv4Ipv6MappingParams',
+  full_name='routing.Ipv4Ipv6MappingParams',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='ipv6_prefix', full_name='routing.Ipv4Ipv6MappingParams.ipv6_prefix', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=908,
+  serialized_end=972,
+)
+
+
+_IPV6IPV4STRIPMSB = _descriptor.Descriptor(
+  name='Ipv6Ipv4StripMsb',
+  full_name='routing.Ipv6Ipv4StripMsb',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=974,
+  serialized_end=992,
+)
+
+
+_IPV6IPV4ADDRESSTRANSLATIONPARAMS = _descriptor.Descriptor(
+  name='Ipv6Ipv4AddressTranslationParams',
+  full_name='routing.Ipv6Ipv4AddressTranslationParams',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='ipv6_ipv4_strip_msb', full_name='routing.Ipv6Ipv4AddressTranslationParams.ipv6_ipv4_strip_msb', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+    _descriptor.OneofDescriptor(
+      name='Ipv6Ipv4TranslationMethodParams', full_name='routing.Ipv6Ipv4AddressTranslationParams.Ipv6Ipv4TranslationMethodParams',
+      index=0, containing_type=None, fields=[]),
+  ],
+  serialized_start=994,
+  serialized_end=1121,
+)
+
+
+_IPV4IPV6ADDRESSTRANSLATIONPARAMS = _descriptor.Descriptor(
+  name='Ipv4Ipv6AddressTranslationParams',
+  full_name='routing.Ipv4Ipv6AddressTranslationParams',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='ipv4_ipv6_msb', full_name='routing.Ipv4Ipv6AddressTranslationParams.ipv4_ipv6_msb', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='ipv4_ipv6_map', full_name='routing.Ipv4Ipv6AddressTranslationParams.ipv4_ipv6_map', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+    _descriptor.OneofDescriptor(
+      name='Ipv4Ipv6TranslationMethodParams', full_name='routing.Ipv4Ipv6AddressTranslationParams.Ipv4Ipv6TranslationMethodParams',
+      index=0, containing_type=None, fields=[]),
+  ],
+  serialized_start=1124,
+  serialized_end=1303,
+)
+
+
+_IPV6IPV4TRANSLATIONPARAMS = _descriptor.Descriptor(
+  name='Ipv6Ipv4TranslationParams',
+  full_name='routing.Ipv6Ipv4TranslationParams',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='source_params', full_name='routing.Ipv6Ipv4TranslationParams.source_params', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='dest_params', full_name='routing.Ipv6Ipv4TranslationParams.dest_params', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1306,
+  serialized_end=1463,
+)
+
+
+_IPV4IPV6TRANSLATIONPARAMS = _descriptor.Descriptor(
+  name='Ipv4Ipv6TranslationParams',
+  full_name='routing.Ipv4Ipv6TranslationParams',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='source_params', full_name='routing.Ipv4Ipv6TranslationParams.source_params', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='dest_params', full_name='routing.Ipv4Ipv6TranslationParams.dest_params', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1466,
+  serialized_end=1623,
+)
+
+
+_TRANSLATIONATTRIBUTES = _descriptor.Descriptor(
+  name='TranslationAttributes',
+  full_name='routing.TranslationAttributes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='ipv4_ipv6_xlate', full_name='routing.TranslationAttributes.ipv4_ipv6_xlate', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='ipv6_ipv4_xlate', full_name='routing.TranslationAttributes.ipv6_ipv4_xlate', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='target_vrf_name', full_name='routing.TranslationAttributes.target_vrf_name', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+    _descriptor.OneofDescriptor(
+      name='translate_params_type', full_name='routing.TranslationAttributes.translate_params_type',
+      index=0, containing_type=None, fields=[]),
+  ],
+  serialized_start=1626,
+  serialized_end=1825,
+)
+
+
 _TUNNELATTRIBUTES = _descriptor.Descriptor(
   name='TunnelAttributes',
   full_name='routing.TunnelAttributes',
@@ -198,6 +554,20 @@ _TUNNELATTRIBUTES = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='vxlan', full_name='routing.TunnelAttributes.vxlan', index=0,
       number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='gre', full_name='routing.TunnelAttributes.gre', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='translate', full_name='routing.TunnelAttributes.translate', index=2,
+      number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -217,8 +587,8 @@ _TUNNELATTRIBUTES = _descriptor.Descriptor(
       name='tunnel_attributes_type', full_name='routing.TunnelAttributes.tunnel_attributes_type',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=596,
-  serialized_end=689,
+  serialized_start=1828,
+  serialized_end=2019,
 )
 
 
@@ -269,8 +639,8 @@ _FLEXIBLETUNNELPROFILE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=692,
-  serialized_end=843,
+  serialized_start=2022,
+  serialized_end=2173,
 )
 
 _VXLANTUNNELATTRIBUTES.fields_by_name['source_prefix'].message_type = prpd__common__pb2._NETWORKADDRESS
@@ -282,14 +652,60 @@ _VXLANTUNNELATTRIBUTES.fields_by_name['rfc7348_reserved'].message_type = _RFC734
 _VXLANTUNNELATTRIBUTES.oneofs_by_name['vxlan_header_reserved'].fields.append(
   _VXLANTUNNELATTRIBUTES.fields_by_name['rfc7348_reserved'])
 _VXLANTUNNELATTRIBUTES.fields_by_name['rfc7348_reserved'].containing_oneof = _VXLANTUNNELATTRIBUTES.oneofs_by_name['vxlan_header_reserved']
+_GRETUNNELATTRIBUTES.fields_by_name['source_prefix'].message_type = prpd__common__pb2._NETWORKADDRESS
+_GRETUNNELATTRIBUTES.fields_by_name['destination_address'].message_type = prpd__common__pb2._NETWORKADDRESS
+_GRETUNNELATTRIBUTES.fields_by_name['inner_source_address'].message_type = prpd__common__pb2._NETWORKADDRESS
+_IPV4IPV6MSBPARAMS.fields_by_name['ipv6_prefix'].message_type = jnx__addr__pb2._IPADDRESS
+_IPV4IPV6MAPPINGPARAMS.fields_by_name['ipv6_prefix'].message_type = jnx__addr__pb2._IPADDRESS
+_IPV6IPV4ADDRESSTRANSLATIONPARAMS.fields_by_name['ipv6_ipv4_strip_msb'].message_type = _IPV6IPV4STRIPMSB
+_IPV6IPV4ADDRESSTRANSLATIONPARAMS.oneofs_by_name['Ipv6Ipv4TranslationMethodParams'].fields.append(
+  _IPV6IPV4ADDRESSTRANSLATIONPARAMS.fields_by_name['ipv6_ipv4_strip_msb'])
+_IPV6IPV4ADDRESSTRANSLATIONPARAMS.fields_by_name['ipv6_ipv4_strip_msb'].containing_oneof = _IPV6IPV4ADDRESSTRANSLATIONPARAMS.oneofs_by_name['Ipv6Ipv4TranslationMethodParams']
+_IPV4IPV6ADDRESSTRANSLATIONPARAMS.fields_by_name['ipv4_ipv6_msb'].message_type = _IPV4IPV6MSBPARAMS
+_IPV4IPV6ADDRESSTRANSLATIONPARAMS.fields_by_name['ipv4_ipv6_map'].message_type = _IPV4IPV6MAPPINGPARAMS
+_IPV4IPV6ADDRESSTRANSLATIONPARAMS.oneofs_by_name['Ipv4Ipv6TranslationMethodParams'].fields.append(
+  _IPV4IPV6ADDRESSTRANSLATIONPARAMS.fields_by_name['ipv4_ipv6_msb'])
+_IPV4IPV6ADDRESSTRANSLATIONPARAMS.fields_by_name['ipv4_ipv6_msb'].containing_oneof = _IPV4IPV6ADDRESSTRANSLATIONPARAMS.oneofs_by_name['Ipv4Ipv6TranslationMethodParams']
+_IPV4IPV6ADDRESSTRANSLATIONPARAMS.oneofs_by_name['Ipv4Ipv6TranslationMethodParams'].fields.append(
+  _IPV4IPV6ADDRESSTRANSLATIONPARAMS.fields_by_name['ipv4_ipv6_map'])
+_IPV4IPV6ADDRESSTRANSLATIONPARAMS.fields_by_name['ipv4_ipv6_map'].containing_oneof = _IPV4IPV6ADDRESSTRANSLATIONPARAMS.oneofs_by_name['Ipv4Ipv6TranslationMethodParams']
+_IPV6IPV4TRANSLATIONPARAMS.fields_by_name['source_params'].message_type = _IPV6IPV4ADDRESSTRANSLATIONPARAMS
+_IPV6IPV4TRANSLATIONPARAMS.fields_by_name['dest_params'].message_type = _IPV6IPV4ADDRESSTRANSLATIONPARAMS
+_IPV4IPV6TRANSLATIONPARAMS.fields_by_name['source_params'].message_type = _IPV4IPV6ADDRESSTRANSLATIONPARAMS
+_IPV4IPV6TRANSLATIONPARAMS.fields_by_name['dest_params'].message_type = _IPV4IPV6ADDRESSTRANSLATIONPARAMS
+_TRANSLATIONATTRIBUTES.fields_by_name['ipv4_ipv6_xlate'].message_type = _IPV4IPV6TRANSLATIONPARAMS
+_TRANSLATIONATTRIBUTES.fields_by_name['ipv6_ipv4_xlate'].message_type = _IPV6IPV4TRANSLATIONPARAMS
+_TRANSLATIONATTRIBUTES.oneofs_by_name['translate_params_type'].fields.append(
+  _TRANSLATIONATTRIBUTES.fields_by_name['ipv4_ipv6_xlate'])
+_TRANSLATIONATTRIBUTES.fields_by_name['ipv4_ipv6_xlate'].containing_oneof = _TRANSLATIONATTRIBUTES.oneofs_by_name['translate_params_type']
+_TRANSLATIONATTRIBUTES.oneofs_by_name['translate_params_type'].fields.append(
+  _TRANSLATIONATTRIBUTES.fields_by_name['ipv6_ipv4_xlate'])
+_TRANSLATIONATTRIBUTES.fields_by_name['ipv6_ipv4_xlate'].containing_oneof = _TRANSLATIONATTRIBUTES.oneofs_by_name['translate_params_type']
 _TUNNELATTRIBUTES.fields_by_name['vxlan'].message_type = _VXLANTUNNELATTRIBUTES
+_TUNNELATTRIBUTES.fields_by_name['gre'].message_type = _GRETUNNELATTRIBUTES
+_TUNNELATTRIBUTES.fields_by_name['translate'].message_type = _TRANSLATIONATTRIBUTES
 _TUNNELATTRIBUTES.oneofs_by_name['tunnel_attributes_type'].fields.append(
   _TUNNELATTRIBUTES.fields_by_name['vxlan'])
 _TUNNELATTRIBUTES.fields_by_name['vxlan'].containing_oneof = _TUNNELATTRIBUTES.oneofs_by_name['tunnel_attributes_type']
+_TUNNELATTRIBUTES.oneofs_by_name['tunnel_attributes_type'].fields.append(
+  _TUNNELATTRIBUTES.fields_by_name['gre'])
+_TUNNELATTRIBUTES.fields_by_name['gre'].containing_oneof = _TUNNELATTRIBUTES.oneofs_by_name['tunnel_attributes_type']
+_TUNNELATTRIBUTES.oneofs_by_name['tunnel_attributes_type'].fields.append(
+  _TUNNELATTRIBUTES.fields_by_name['translate'])
+_TUNNELATTRIBUTES.fields_by_name['translate'].containing_oneof = _TUNNELATTRIBUTES.oneofs_by_name['tunnel_attributes_type']
 _FLEXIBLETUNNELPROFILE.fields_by_name['action'].enum_type = _TUNNELACTIONTYPE
 _FLEXIBLETUNNELPROFILE.fields_by_name['attributes'].message_type = _TUNNELATTRIBUTES
 DESCRIPTOR.message_types_by_name['VxlanTunnelAttributes'] = _VXLANTUNNELATTRIBUTES
 DESCRIPTOR.message_types_by_name['Rfc7348VxlanReserved'] = _RFC7348VXLANRESERVED
+DESCRIPTOR.message_types_by_name['GreTunnelAttributes'] = _GRETUNNELATTRIBUTES
+DESCRIPTOR.message_types_by_name['Ipv4Ipv6MsbParams'] = _IPV4IPV6MSBPARAMS
+DESCRIPTOR.message_types_by_name['Ipv4Ipv6MappingParams'] = _IPV4IPV6MAPPINGPARAMS
+DESCRIPTOR.message_types_by_name['Ipv6Ipv4StripMsb'] = _IPV6IPV4STRIPMSB
+DESCRIPTOR.message_types_by_name['Ipv6Ipv4AddressTranslationParams'] = _IPV6IPV4ADDRESSTRANSLATIONPARAMS
+DESCRIPTOR.message_types_by_name['Ipv4Ipv6AddressTranslationParams'] = _IPV4IPV6ADDRESSTRANSLATIONPARAMS
+DESCRIPTOR.message_types_by_name['Ipv6Ipv4TranslationParams'] = _IPV6IPV4TRANSLATIONPARAMS
+DESCRIPTOR.message_types_by_name['Ipv4Ipv6TranslationParams'] = _IPV4IPV6TRANSLATIONPARAMS
+DESCRIPTOR.message_types_by_name['TranslationAttributes'] = _TRANSLATIONATTRIBUTES
 DESCRIPTOR.message_types_by_name['TunnelAttributes'] = _TUNNELATTRIBUTES
 DESCRIPTOR.message_types_by_name['FlexibleTunnelProfile'] = _FLEXIBLETUNNELPROFILE
 DESCRIPTOR.enum_types_by_name['TunnelActionType'] = _TUNNELACTIONTYPE
@@ -308,6 +724,69 @@ Rfc7348VxlanReserved = _reflection.GeneratedProtocolMessageType('Rfc7348VxlanRes
   # @@protoc_insertion_point(class_scope:routing.Rfc7348VxlanReserved)
   })
 _sym_db.RegisterMessage(Rfc7348VxlanReserved)
+
+GreTunnelAttributes = _reflection.GeneratedProtocolMessageType('GreTunnelAttributes', (_message.Message,), {
+  'DESCRIPTOR' : _GRETUNNELATTRIBUTES,
+  '__module__' : 'flexible_tunnel_profile_pb2'
+  # @@protoc_insertion_point(class_scope:routing.GreTunnelAttributes)
+  })
+_sym_db.RegisterMessage(GreTunnelAttributes)
+
+Ipv4Ipv6MsbParams = _reflection.GeneratedProtocolMessageType('Ipv4Ipv6MsbParams', (_message.Message,), {
+  'DESCRIPTOR' : _IPV4IPV6MSBPARAMS,
+  '__module__' : 'flexible_tunnel_profile_pb2'
+  # @@protoc_insertion_point(class_scope:routing.Ipv4Ipv6MsbParams)
+  })
+_sym_db.RegisterMessage(Ipv4Ipv6MsbParams)
+
+Ipv4Ipv6MappingParams = _reflection.GeneratedProtocolMessageType('Ipv4Ipv6MappingParams', (_message.Message,), {
+  'DESCRIPTOR' : _IPV4IPV6MAPPINGPARAMS,
+  '__module__' : 'flexible_tunnel_profile_pb2'
+  # @@protoc_insertion_point(class_scope:routing.Ipv4Ipv6MappingParams)
+  })
+_sym_db.RegisterMessage(Ipv4Ipv6MappingParams)
+
+Ipv6Ipv4StripMsb = _reflection.GeneratedProtocolMessageType('Ipv6Ipv4StripMsb', (_message.Message,), {
+  'DESCRIPTOR' : _IPV6IPV4STRIPMSB,
+  '__module__' : 'flexible_tunnel_profile_pb2'
+  # @@protoc_insertion_point(class_scope:routing.Ipv6Ipv4StripMsb)
+  })
+_sym_db.RegisterMessage(Ipv6Ipv4StripMsb)
+
+Ipv6Ipv4AddressTranslationParams = _reflection.GeneratedProtocolMessageType('Ipv6Ipv4AddressTranslationParams', (_message.Message,), {
+  'DESCRIPTOR' : _IPV6IPV4ADDRESSTRANSLATIONPARAMS,
+  '__module__' : 'flexible_tunnel_profile_pb2'
+  # @@protoc_insertion_point(class_scope:routing.Ipv6Ipv4AddressTranslationParams)
+  })
+_sym_db.RegisterMessage(Ipv6Ipv4AddressTranslationParams)
+
+Ipv4Ipv6AddressTranslationParams = _reflection.GeneratedProtocolMessageType('Ipv4Ipv6AddressTranslationParams', (_message.Message,), {
+  'DESCRIPTOR' : _IPV4IPV6ADDRESSTRANSLATIONPARAMS,
+  '__module__' : 'flexible_tunnel_profile_pb2'
+  # @@protoc_insertion_point(class_scope:routing.Ipv4Ipv6AddressTranslationParams)
+  })
+_sym_db.RegisterMessage(Ipv4Ipv6AddressTranslationParams)
+
+Ipv6Ipv4TranslationParams = _reflection.GeneratedProtocolMessageType('Ipv6Ipv4TranslationParams', (_message.Message,), {
+  'DESCRIPTOR' : _IPV6IPV4TRANSLATIONPARAMS,
+  '__module__' : 'flexible_tunnel_profile_pb2'
+  # @@protoc_insertion_point(class_scope:routing.Ipv6Ipv4TranslationParams)
+  })
+_sym_db.RegisterMessage(Ipv6Ipv4TranslationParams)
+
+Ipv4Ipv6TranslationParams = _reflection.GeneratedProtocolMessageType('Ipv4Ipv6TranslationParams', (_message.Message,), {
+  'DESCRIPTOR' : _IPV4IPV6TRANSLATIONPARAMS,
+  '__module__' : 'flexible_tunnel_profile_pb2'
+  # @@protoc_insertion_point(class_scope:routing.Ipv4Ipv6TranslationParams)
+  })
+_sym_db.RegisterMessage(Ipv4Ipv6TranslationParams)
+
+TranslationAttributes = _reflection.GeneratedProtocolMessageType('TranslationAttributes', (_message.Message,), {
+  'DESCRIPTOR' : _TRANSLATIONATTRIBUTES,
+  '__module__' : 'flexible_tunnel_profile_pb2'
+  # @@protoc_insertion_point(class_scope:routing.TranslationAttributes)
+  })
+_sym_db.RegisterMessage(TranslationAttributes)
 
 TunnelAttributes = _reflection.GeneratedProtocolMessageType('TunnelAttributes', (_message.Message,), {
   'DESCRIPTOR' : _TUNNELATTRIBUTES,

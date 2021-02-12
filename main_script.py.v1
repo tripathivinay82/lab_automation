@@ -462,49 +462,6 @@ def ecmp_over_flex_route(hostname):
         print('Opps!! Flex Route: RE & PFE are out of Sync!')
         return False
 
-def setup_private_link(hostname):
-    '''
-    This function will configure translate, encap and decap profile for Private Link on EXR and DCGW
-    '''
-
-    print(f"Hostname: {hostname}")
-
-    try:
-        with Device(host=hostname, user=username, password=password, normalize=True) as dev:
-            dev.open()
-            retVal=dev.facts
-            if retVal['hostname'] == 'exr02.chg':
-                retVal1 = subprocess.run([sys.executable, "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "exr_gre_encap.json"], stdout=subprocess.DEVNULL, timeout=5)
-                retVal2 = subprocess.run([sys.executable, "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "exr_xlate_profile_v6_to_v4.json"], stdout=subprocess.DEVNULL, timeout=5)
-                retVal3 = subprocess.run([sys.executable, "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "exr_xlate_profile_v4_to_v6.json"], stdout=subprocess.DEVNULL, timeout=5)
-                retVal4 = subprocess.run([sys.executable, "decap_inject.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "exr_gre_decap.json"], stdout=subprocess.DEVNULL, timeout=5)
-                if retVal1.returncode != 0 or retVal2.returncode != 0 or retVal3.returncode != 0 or retVal4.returncode != 0:
-                    print(f"Oops!!Subprocess returned unexpected value...retVal1: {retVal1.returncode}, retVal2:{retVal2.returncode}, retVal3:{retVal3.returncode}, retVal4:{retVal4.returncode}")
-                    return False
-            elif retVal['hostname'] == 'DCGW':
-                retVal1 = subprocess.run([sys.executable, "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "dcgw_gre_encap.json"], stdout=subprocess.DEVNULL, timeout=5)
-                retVal2 = subprocess.run([sys.executable, "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "dcgw_xlate_profile_v6_to_v4.json"], stdout=subprocess.DEVNULL, timeout=5)
-                retVal3 = subprocess.run([sys.executable, "route_inject_p3.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "dcgw_xlate_profile_v4_to_v6.json"], stdout=subprocess.DEVNULL, timeout=5)
-                retVal4 = subprocess.run([sys.executable, "decap_inject.py", "-H", hostname, "-P", "50051", "-U", username, "-W", password, "-F", "dcgw_gre_decap.json"], stdout=subprocess.DEVNULL, timeout=5)
-                if retVal1.returncode != 0 or retVal2.returncode != 0 or retVal3.returncode != 0 or retVal4.returncode != 0:
-                    print(f"Oops!!Subprocess returned unexpected value...retVal1: {retVal1.returncode}, retVal2:{retVal2.returncode}, retVal3:{retVal3.returncode}, retVal4:{retVal4.returncode}")
-                    return False
-            else:
-                print("Oops! Incorrect Hostname..Please investigate..")
-                dev.close()
-                return False
-    except ConnectRefusedError:
-        print("%s: Error - Device connection refused!" % hostname)
-        return False
-    except ConnectTimeoutError:
-        print("%s: Error - Device connection timed out!" % hostname)
-        return False
-    except ConnectAuthError:
-        print("%s: Error - Authentication failure!" % hostname)
-        return False
-
-    return True
-
 
 def config_change(hostname):
     '''
@@ -561,8 +518,6 @@ def main():
     This is the main function...More details to follow
     '''
     isVm = str(input("Is VM setup creation needed? [Yes/No]: ")) or "No"
-    isFlexRt = str(input("Do you need Flex Route setup? [Yes/No]: ")) or "No"
-    isPl = str(input("Do you need Private Link setup? [Yes/No]: ")) or "No"
  
     if isVm == 'Yes' or isVm == 'yes':
         #Run and configure VMM
@@ -607,7 +562,7 @@ def main():
         time.sleep(600)
     else:
         print('VM creation skipped as per User Input')
-        router_dict={'r1_re0': '10.49.172.186', 'r2_re0': '10.49.172.183', 'r3_re0': '10.49.172.180', 'r4_re0': '10.49.172.178', 'r5_re0': '10.49.172.175'}
+        router_dict={'r1_re0': '10.49.105.178', 'r2_re0': '10.49.103.161', 'r3_re0': '10.49.102.251', 'r4_re0': '10.49.101.11', 'r5_re0': '10.49.100.155'}
 
     #Verify Router State and configuration 
     time_start = time.time()
@@ -645,23 +600,17 @@ def main():
     else:
         print("Oops!!Router Config Failed..")
 
-    if isFlexRt == 'Yes' or isFlexRt == 'yes':
-        # Configure Flex Route from controller
-        if config_flex_route(router_dict['r2_re0']) and config_flex_route(router_dict['r4_re0']):
-            print("Flex Route programming Successful!!")
-        else:
-            print("Oops!!Flex Route programming failed!..")
-        # Verify Flex Route
-        #if ecmp_over_flex_route(router_dict['r2_re0']):
-        #    print("R2: RE/Kernel/PFE: Flex Route Verification Successful!!")
-        #else:
-        #    print("Oops!!R2: Flex Route verification failed!..")
-    elif isPl == 'Yes' or isPl == 'yes':
-        # Configure Private Link from controller
-        if setup_private_link(router_dict['r2_re0']) and setup_private_link(router_dict['r4_re0']):
-            print("Private Link programming Successful!!")
-        else:
-            print("Oops!!Private Link programming failed!..")
+    # Configure Flex Route from controller
+    if config_flex_route(router_dict['r2_re0']) and config_flex_route(router_dict['r4_re0']):
+        print("Flex Route programming Successful!!")
+    else:
+        print("Oops!!Flex Route programming failed!..")
+
+    # Verify Flex Route
+    if ecmp_over_flex_route(router_dict['r2_re0']):
+        print("R2: RE/Kernel/PFE: Flex Route Verification Successful!!")
+    else:
+        print("Oops!!R2: Flex Route verification failed!..")
 
 if __name__ == "__main__":
     main()    

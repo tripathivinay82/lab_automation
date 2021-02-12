@@ -20,7 +20,7 @@ import jnx_addr_pb2 as jnx_addr
 TIMEOUT = 60
 BATCH_SIZE = 1000
 
-
+#comment
 parser = optparse.OptionParser()
 parser.add_option('-O', '--op', action="store", dest="OPER", 
                   help="Operation (add or del)", default="add")

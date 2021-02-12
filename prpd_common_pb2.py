@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='routing',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x11prpd_common.proto\x12\x07routing\x1a\x0ejnx_addr.proto\"w\n\tRpcStatus\x12.\n\x04\x63ode\x18\x01 \x01(\x0e\x32 .routing.RpcStatus.RpcStatusCode\x12\x0f\n\x07message\x18\x02 \x01(\t\")\n\rRpcStatusCode\x12\x0b\n\x07SUCCESS\x10\x00\x12\x0b\n\x07\x46\x41ILURE\x10\x01\"\x1e\n\x0eRouteTableName\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1a\n\x0cRouteTableId\x12\n\n\x02id\x18\x01 \x01(\r\"s\n\nRouteTable\x12\'\n\x06rtt_id\x18\x01 \x01(\x0b\x32\x15.routing.RouteTableIdH\x00\x12+\n\x08rtt_name\x18\x02 \x01(\x0b\x32\x17.routing.RouteTableNameH\x00\x42\x0f\n\rRtTableFormat\"5\n\x07RdType0\x12\x11\n\tas_number\x18\x01 \x01(\r\x12\x17\n\x0f\x61ssigned_number\x18\x02 \x01(\r\"J\n\x07RdType1\x12&\n\nip_address\x18\x01 \x01(\x0b\x32\x12.jnxBase.IpAddress\x12\x17\n\x0f\x61ssigned_number\x18\x02 \x01(\r\"5\n\x07RdType2\x12\x11\n\tas_number\x18\x01 \x01(\r\x12\x17\n\x0f\x61ssigned_number\x18\x02 \x01(\r\"\x83\x01\n\x12RouteDistinguisher\x12\x1f\n\x03rd0\x18\x01 \x01(\x0b\x32\x10.routing.RdType0H\x00\x12\x1f\n\x03rd1\x18\x02 \x01(\x0b\x32\x10.routing.RdType1H\x00\x12\x1f\n\x03rd2\x18\x03 \x01(\x0b\x32\x10.routing.RdType2H\x00\x42\n\n\x08RdFormat\"]\n\x0cL3vpnAddress\x12\'\n\x02rd\x18\x01 \x01(\x0b\x32\x1b.routing.RouteDistinguisher\x12$\n\x08vpn_addr\x18\x02 \x01(\x0b\x32\x12.jnxBase.IpAddress\"\xd8\x01\n\nLabelEntry\x12\r\n\x05label\x18\x01 \x01(\r\x12\x15\n\rtraffic_class\x18\x02 \x01(\r\x12\x0b\n\x03ttl\x18\x03 \x01(\r\x12\x17\n\x0f\x62ottom_of_stack\x18\x04 \x01(\x08\"~\n\x0fWellKnownLabels\x12\x1c\n\x18IPV4_EXPLICIT_NULL_LABEL\x10\x00\x12\x16\n\x12ROUTER_ALERT_LABEL\x10\x01\x12\x1c\n\x18IPV6_EXPLICIT_NULL_LABEL\x10\x02\x12\x17\n\x13IMPLICIT_NULL_LABEL\x10\x03\"d\n\x0fLabelStackEntry\x12\'\n\x06opcode\x18\x01 \x01(\x0e\x32\x17.routing.LabelOperation\x12(\n\x0blabel_entry\x18\x02 \x01(\x0b\x32\x13.routing.LabelEntry\"\x1c\n\x0bMplsAddress\x12\r\n\x05label\x18\x01 \x01(\r\"7\n\nLabelStack\x12)\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x18.routing.LabelStackEntry\"J\n\x08SidEntry\x12.\n\x0fsid_label_entry\x18\x01 \x01(\x0b\x32\x13.routing.LabelEntryH\x00\x42\x0e\n\x0cSidEntryType\"<\n\x0cSegmentType1\x12,\n\x0fsid_label_entry\x18\x01 \x01(\x0b\x32\x13.routing.LabelEntry\"I\n\x0bSRTESegment\x12.\n\rsegment_type1\x18\x01 \x01(\x0b\x32\x15.routing.SegmentType1H\x00\x42\n\n\x08SRTEType\"I\n\x0fSRTESegmentList\x12\x0e\n\x06weight\x18\x01 \x01(\r\x12&\n\x08segments\x18\x02 \x03(\x0b\x32\x14.routing.SRTESegment\"*\n\x11SRTEDistinguisher\x12\x15\n\rdistinguisher\x18\x01 \x01(\r\"\x1a\n\tSRTEColor\x12\r\n\x05\x63olor\x18\x01 \x01(\r\":\n\x0eSRTEBindingSID\x12(\n\rbinding_sr_id\x18\x01 \x01(\x0b\x32\x11.routing.SidEntry\"\x92\x01\n\x0bSRTEAddress\x12\'\n\x0b\x64\x65stination\x18\x01 \x01(\x0b\x32\x12.jnxBase.IpAddress\x12$\n\x08sr_color\x18\x02 \x01(\x0b\x32\x12.routing.SRTEColor\x12\x34\n\x10sr_distinguisher\x18\x03 \x01(\x0b\x32\x1a.routing.SRTEDistinguisher\"\x82\x01\n\rSRTERouteData\x12,\n\x0b\x62inding_sid\x18\x01 \x01(\x0b\x32\x17.routing.SRTEBindingSID\x12\x12\n\npreference\x18\x02 \x01(\r\x12/\n\rsegment_lists\x18\x03 \x03(\x0b\x32\x18.routing.SRTESegmentList\"~\n\x11\x46lowspecRouteData\x12\x0f\n\x07\x64iscard\x18\x01 \x01(\x08\x12\x11\n\tmark_dscp\x18\x02 \x01(\r\x12\x16\n\x0erate_limit_val\x18\x03 \x01(\r\x12\x1d\n\x15redirect_inst_rt_comm\x18\x04 \x01(\t\x12\x0e\n\x06sample\x18\x05 \x01(\x08\"\x93\x01\n\x19\x41\x64\x64ressFamilySpecificData\x12\x32\n\x10srte_policy_data\x18\x01 \x01(\x0b\x32\x16.routing.SRTERouteDataH\x00\x12\x33\n\rflowspec_data\x18\x02 \x01(\x0b\x32\x1a.routing.FlowspecRouteDataH\x00\x42\r\n\x0bRouteDataAf\"\xd5\x04\n\x0f\x46lowspecAddress\x12\'\n\x0b\x64\x65stination\x18\x01 \x01(\x0b\x32\x12.jnxBase.IpAddress\x12\x17\n\x0f\x64\x65st_prefix_len\x18\x02 \x01(\r\x12\"\n\x06source\x18\x03 \x01(\x0b\x32\x12.jnxBase.IpAddress\x12\x19\n\x11source_prefix_len\x18\x04 \x01(\r\x12/\n\x0cip_protocols\x18\x05 \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12(\n\x05ports\x18\x06 \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12-\n\ndest_ports\x18\x07 \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12,\n\tsrc_ports\x18\x08 \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12-\n\nicmp_types\x18\t \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12-\n\nicmp_codes\x18\n \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12$\n\ttcp_flags\x18\x0b \x01(\x0e\x32\x11.jnxBase.TcpFlags\x12.\n\x0bpkt_lengths\x18\x0c \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12(\n\x05\x64scps\x18\r \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12+\n\x08\x66ragment\x18\x0e \x01(\x0b\x32\x19.jnxBase.IpFragementFlags\"\xe1\x03\n\x0bRoutePrefix\x12\"\n\x04inet\x18\x01 \x01(\x0b\x32\x12.jnxBase.IpAddressH\x00\x12#\n\x05inet6\x18\x02 \x01(\x0b\x32\x12.jnxBase.IpAddressH\x00\x12(\n\x07inetvpn\x18\x03 \x01(\x0b\x32\x15.routing.L3vpnAddressH\x00\x12)\n\x08inet6vpn\x18\x04 \x01(\x0b\x32\x15.routing.L3vpnAddressH\x00\x12*\n\x0clabeled_inet\x18\x05 \x01(\x0b\x32\x12.jnxBase.IpAddressH\x00\x12+\n\rlabeled_inet6\x18\x06 \x01(\x0b\x32\x12.jnxBase.IpAddressH\x00\x12\x30\n\x10inet_srte_policy\x18\x07 \x01(\x0b\x32\x14.routing.SRTEAddressH\x00\x12\x31\n\x11inet6_srte_policy\x18\x08 \x01(\x0b\x32\x14.routing.SRTEAddressH\x00\x12\x31\n\rinet_flowspec\x18\t \x01(\x0b\x32\x18.routing.FlowspecAddressH\x00\x12\x32\n\x0einet6_flowspec\x18\n \x01(\x0b\x32\x18.routing.FlowspecAddressH\x00\x42\x0f\n\rRoutePrefixAf\"\x85\x01\n\x0eNetworkAddress\x12\"\n\x04inet\x18\x01 \x01(\x0b\x32\x12.jnxBase.IpAddressH\x00\x12#\n\x05inet6\x18\x02 \x01(\x0b\x32\x12.jnxBase.IpAddressH\x00\x12$\n\x04mpls\x18\x03 \x01(\x0b\x32\x14.routing.MplsAddressH\x00\x42\x04\n\x02\x41\x66*Y\n\nReturnCode\x12\x0f\n\x0bRET_SUCCESS\x10\x00\x12\x0f\n\x0bRET_FAILURE\x10\x01\x12\x11\n\rRET_NOT_FOUND\x10\x02\x12\x16\n\x12RET_INVALID_PARAMS\x10\x03*2\n\x10RouteTableFormat\x12\x10\n\x0cTABLE_STRING\x10\x00\x12\x0c\n\x08TABLE_ID\x10\x01*\xf6\x01\n\x0bRouteAfType\x12\x10\n\x0cRT_AF_UNSPEC\x10\x00\x12\x0e\n\nRT_AF_INET\x10\x01\x12\x0f\n\x0bRT_AF_INET6\x10\x02\x12\x11\n\rRT_AF_INETVPN\x10\x03\x12\x12\n\x0eRT_AF_INET6VPN\x10\x04\x12\x16\n\x12RT_AF_LABELED_INET\x10\x05\x12\x17\n\x13RT_AF_LABELED_INET6\x10\x06\x12\x13\n\x0fRT_AF_INET_SRTE\x10\x07\x12\x14\n\x10RT_AF_INET6_SRTE\x10\x08\x12\x17\n\x13RT_AF_INET_FLOWSPEC\x10\t\x12\x18\n\x14RT_AF_INET6_FLOWSPEC\x10\n*7\n\x0eLabelOperation\x12\x08\n\x04NOOP\x10\x00\x12\x07\n\x03POP\x10\x01\x12\x08\n\x04PUSH\x10\x02\x12\x08\n\x04SWAP\x10\x03*\xf3\x02\n\x0eRouteProtoType\x12\x07\n\x03\x41NY\x10\x00\x12\n\n\x06\x44IRECT\x10\x01\x12\t\n\x05LOCAL\x10\x02\x12\n\n\x06KERNEL\x10\x03\x12\x0c\n\x08REDIRECT\x10\x04\x12\x08\n\x04OSPF\x10\x05\x12\t\n\x05OSPF3\x10\x06\x12\x0c\n\x08OSPF_ANY\x10\x07\x12\x07\n\x03RIP\x10\x08\x12\t\n\x05RIPNG\x10\t\x12\x07\n\x03\x42GP\x10\n\x12\n\n\x06STATIC\x10\x0b\x12\x08\n\x04ISIS\x10\x0c\x12\x08\n\x04IGMP\x10\r\x12\r\n\tAGGREGATE\x10\x0e\x12\t\n\x05\x44VMRP\x10\x0f\x12\x07\n\x03PIM\x10\x10\x12\x08\n\x04MSDP\x10\x11\x12\x08\n\x04MPLS\x10\x12\x12\x08\n\x04RSVP\x10\x13\x12\x07\n\x03\x43\x43\x43\x10\x14\x12\x07\n\x03LDP\x10\x15\x12\x07\n\x03VPN\x10\x16\x12\x08\n\x04MVPN\x10\x17\x12\t\n\x05MCAST\x10\x18\x12\t\n\x05L2VPN\x10\x19\x12\t\n\x05L2CKT\x10\x1a\x12\x0e\n\nBGP_STATIC\x10\x1b\x12\x08\n\x04RIFT\x10\x1c\x12\t\n\x05OTHER\x10\x1d\x12\x1b\n\x17L2_LEARNED_HOST_ROUTING\x10\x1e\x62\x06proto3'
+  serialized_pb=b'\n\x11prpd_common.proto\x12\x07routing\x1a\x0ejnx_addr.proto\"w\n\tRpcStatus\x12.\n\x04\x63ode\x18\x01 \x01(\x0e\x32 .routing.RpcStatus.RpcStatusCode\x12\x0f\n\x07message\x18\x02 \x01(\t\")\n\rRpcStatusCode\x12\x0b\n\x07SUCCESS\x10\x00\x12\x0b\n\x07\x46\x41ILURE\x10\x01\"\x1e\n\x0eRouteTableName\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1a\n\x0cRouteTableId\x12\n\n\x02id\x18\x01 \x01(\r\"s\n\nRouteTable\x12\'\n\x06rtt_id\x18\x01 \x01(\x0b\x32\x15.routing.RouteTableIdH\x00\x12+\n\x08rtt_name\x18\x02 \x01(\x0b\x32\x17.routing.RouteTableNameH\x00\x42\x0f\n\rRtTableFormat\"5\n\x07RdType0\x12\x11\n\tas_number\x18\x01 \x01(\r\x12\x17\n\x0f\x61ssigned_number\x18\x02 \x01(\r\"J\n\x07RdType1\x12&\n\nip_address\x18\x01 \x01(\x0b\x32\x12.jnxBase.IpAddress\x12\x17\n\x0f\x61ssigned_number\x18\x02 \x01(\r\"5\n\x07RdType2\x12\x11\n\tas_number\x18\x01 \x01(\r\x12\x17\n\x0f\x61ssigned_number\x18\x02 \x01(\r\"\x83\x01\n\x12RouteDistinguisher\x12\x1f\n\x03rd0\x18\x01 \x01(\x0b\x32\x10.routing.RdType0H\x00\x12\x1f\n\x03rd1\x18\x02 \x01(\x0b\x32\x10.routing.RdType1H\x00\x12\x1f\n\x03rd2\x18\x03 \x01(\x0b\x32\x10.routing.RdType2H\x00\x42\n\n\x08RdFormat\"]\n\x0cL3vpnAddress\x12\'\n\x02rd\x18\x01 \x01(\x0b\x32\x1b.routing.RouteDistinguisher\x12$\n\x08vpn_addr\x18\x02 \x01(\x0b\x32\x12.jnxBase.IpAddress\"\xd8\x01\n\nLabelEntry\x12\r\n\x05label\x18\x01 \x01(\r\x12\x15\n\rtraffic_class\x18\x02 \x01(\r\x12\x0b\n\x03ttl\x18\x03 \x01(\r\x12\x17\n\x0f\x62ottom_of_stack\x18\x04 \x01(\x08\"~\n\x0fWellKnownLabels\x12\x1c\n\x18IPV4_EXPLICIT_NULL_LABEL\x10\x00\x12\x16\n\x12ROUTER_ALERT_LABEL\x10\x01\x12\x1c\n\x18IPV6_EXPLICIT_NULL_LABEL\x10\x02\x12\x17\n\x13IMPLICIT_NULL_LABEL\x10\x03\"d\n\x0fLabelStackEntry\x12\'\n\x06opcode\x18\x01 \x01(\x0e\x32\x17.routing.LabelOperation\x12(\n\x0blabel_entry\x18\x02 \x01(\x0b\x32\x13.routing.LabelEntry\"\x1c\n\x0bMplsAddress\x12\r\n\x05label\x18\x01 \x01(\r\"7\n\nLabelStack\x12)\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x18.routing.LabelStackEntry\"J\n\x08SidEntry\x12.\n\x0fsid_label_entry\x18\x01 \x01(\x0b\x32\x13.routing.LabelEntryH\x00\x42\x0e\n\x0cSidEntryType\"<\n\x0cSegmentType1\x12,\n\x0fsid_label_entry\x18\x01 \x01(\x0b\x32\x13.routing.LabelEntry\"I\n\x0bSRTESegment\x12.\n\rsegment_type1\x18\x01 \x01(\x0b\x32\x15.routing.SegmentType1H\x00\x42\n\n\x08SRTEType\"I\n\x0fSRTESegmentList\x12\x0e\n\x06weight\x18\x01 \x01(\r\x12&\n\x08segments\x18\x02 \x03(\x0b\x32\x14.routing.SRTESegment\"*\n\x11SRTEDistinguisher\x12\x15\n\rdistinguisher\x18\x01 \x01(\r\"\x1a\n\tSRTEColor\x12\r\n\x05\x63olor\x18\x01 \x01(\r\":\n\x0eSRTEBindingSID\x12(\n\rbinding_sr_id\x18\x01 \x01(\x0b\x32\x11.routing.SidEntry\"\x1f\n\x08SRTEName\x12\x13\n\x0btunnel_name\x18\x01 \x01(\t\"%\n\x0cSRTEPriority\x12\x15\n\rsrte_priority\x18\x01 \x01(\r\":\n\x08SRTEEnlp\x12.\n\tsrte_enlp\x18\x01 \x01(\x0e\x32\x1b.routing.SRTEEnlpOperations\"\x92\x01\n\x0bSRTEAddress\x12\'\n\x0b\x64\x65stination\x18\x01 \x01(\x0b\x32\x12.jnxBase.IpAddress\x12$\n\x08sr_color\x18\x02 \x01(\x0b\x32\x12.routing.SRTEColor\x12\x34\n\x10sr_distinguisher\x18\x03 \x01(\x0b\x32\x1a.routing.SRTEDistinguisher\"\xf6\x01\n\rSRTERouteData\x12,\n\x0b\x62inding_sid\x18\x01 \x01(\x0b\x32\x17.routing.SRTEBindingSID\x12\x12\n\npreference\x18\x02 \x01(\r\x12/\n\rsegment_lists\x18\x03 \x03(\x0b\x32\x18.routing.SRTESegmentList\x12\"\n\x07sr_name\x18\x04 \x01(\x0b\x32\x11.routing.SRTEName\x12*\n\x0bsr_priority\x18\x06 \x01(\x0b\x32\x15.routing.SRTEPriority\x12\"\n\x07sr_enlp\x18\x07 \x01(\x0b\x32\x11.routing.SRTEEnlp\"~\n\x11\x46lowspecRouteData\x12\x0f\n\x07\x64iscard\x18\x01 \x01(\x08\x12\x11\n\tmark_dscp\x18\x02 \x01(\r\x12\x16\n\x0erate_limit_val\x18\x03 \x01(\r\x12\x1d\n\x15redirect_inst_rt_comm\x18\x04 \x01(\t\x12\x0e\n\x06sample\x18\x05 \x01(\x08\"\x93\x01\n\x19\x41\x64\x64ressFamilySpecificData\x12\x32\n\x10srte_policy_data\x18\x01 \x01(\x0b\x32\x16.routing.SRTERouteDataH\x00\x12\x33\n\rflowspec_data\x18\x02 \x01(\x0b\x32\x1a.routing.FlowspecRouteDataH\x00\x42\r\n\x0bRouteDataAf\"\xd5\x04\n\x0f\x46lowspecAddress\x12\'\n\x0b\x64\x65stination\x18\x01 \x01(\x0b\x32\x12.jnxBase.IpAddress\x12\x17\n\x0f\x64\x65st_prefix_len\x18\x02 \x01(\r\x12\"\n\x06source\x18\x03 \x01(\x0b\x32\x12.jnxBase.IpAddress\x12\x19\n\x11source_prefix_len\x18\x04 \x01(\r\x12/\n\x0cip_protocols\x18\x05 \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12(\n\x05ports\x18\x06 \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12-\n\ndest_ports\x18\x07 \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12,\n\tsrc_ports\x18\x08 \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12-\n\nicmp_types\x18\t \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12-\n\nicmp_codes\x18\n \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12$\n\ttcp_flags\x18\x0b \x01(\x0e\x32\x11.jnxBase.TcpFlags\x12.\n\x0bpkt_lengths\x18\x0c \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12(\n\x05\x64scps\x18\r \x01(\x0b\x32\x19.jnxBase.NumericRangeList\x12+\n\x08\x66ragment\x18\x0e \x01(\x0b\x32\x19.jnxBase.IpFragementFlags\"\xe1\x03\n\x0bRoutePrefix\x12\"\n\x04inet\x18\x01 \x01(\x0b\x32\x12.jnxBase.IpAddressH\x00\x12#\n\x05inet6\x18\x02 \x01(\x0b\x32\x12.jnxBase.IpAddressH\x00\x12(\n\x07inetvpn\x18\x03 \x01(\x0b\x32\x15.routing.L3vpnAddressH\x00\x12)\n\x08inet6vpn\x18\x04 \x01(\x0b\x32\x15.routing.L3vpnAddressH\x00\x12*\n\x0clabeled_inet\x18\x05 \x01(\x0b\x32\x12.jnxBase.IpAddressH\x00\x12+\n\rlabeled_inet6\x18\x06 \x01(\x0b\x32\x12.jnxBase.IpAddressH\x00\x12\x30\n\x10inet_srte_policy\x18\x07 \x01(\x0b\x32\x14.routing.SRTEAddressH\x00\x12\x31\n\x11inet6_srte_policy\x18\x08 \x01(\x0b\x32\x14.routing.SRTEAddressH\x00\x12\x31\n\rinet_flowspec\x18\t \x01(\x0b\x32\x18.routing.FlowspecAddressH\x00\x12\x32\n\x0einet6_flowspec\x18\n \x01(\x0b\x32\x18.routing.FlowspecAddressH\x00\x42\x0f\n\rRoutePrefixAf\"\x85\x01\n\x0eNetworkAddress\x12\"\n\x04inet\x18\x01 \x01(\x0b\x32\x12.jnxBase.IpAddressH\x00\x12#\n\x05inet6\x18\x02 \x01(\x0b\x32\x12.jnxBase.IpAddressH\x00\x12$\n\x04mpls\x18\x03 \x01(\x0b\x32\x14.routing.MplsAddressH\x00\x42\x04\n\x02\x41\x66*Y\n\nReturnCode\x12\x0f\n\x0bRET_SUCCESS\x10\x00\x12\x0f\n\x0bRET_FAILURE\x10\x01\x12\x11\n\rRET_NOT_FOUND\x10\x02\x12\x16\n\x12RET_INVALID_PARAMS\x10\x03*2\n\x10RouteTableFormat\x12\x10\n\x0cTABLE_STRING\x10\x00\x12\x0c\n\x08TABLE_ID\x10\x01*\xf6\x01\n\x0bRouteAfType\x12\x10\n\x0cRT_AF_UNSPEC\x10\x00\x12\x0e\n\nRT_AF_INET\x10\x01\x12\x0f\n\x0bRT_AF_INET6\x10\x02\x12\x11\n\rRT_AF_INETVPN\x10\x03\x12\x12\n\x0eRT_AF_INET6VPN\x10\x04\x12\x16\n\x12RT_AF_LABELED_INET\x10\x05\x12\x17\n\x13RT_AF_LABELED_INET6\x10\x06\x12\x13\n\x0fRT_AF_INET_SRTE\x10\x07\x12\x14\n\x10RT_AF_INET6_SRTE\x10\x08\x12\x17\n\x13RT_AF_INET_FLOWSPEC\x10\t\x12\x18\n\x14RT_AF_INET6_FLOWSPEC\x10\n*7\n\x0eLabelOperation\x12\x08\n\x04NOOP\x10\x00\x12\x07\n\x03POP\x10\x01\x12\x08\n\x04PUSH\x10\x02\x12\x08\n\x04SWAP\x10\x03*\xb6\x01\n\x12SRTEEnlpOperations\x12\x19\n\x15SRTE_ENLP_INVALID_VAL\x10\x00\x12\x1c\n\x18PUSH_IPV4_EXP_NULL_LABEL\x10\x01\x12\x1c\n\x18PUSH_IPV6_EXP_NULL_LABEL\x10\x02\x12$\n PUSH_IPV4_OR_IPV6_EXP_NULL_LABEL\x10\x03\x12#\n\x1f\x44O_NOT_PUSH_EXPLICIT_NULL_LABEL\x10\x04*\xf3\x02\n\x0eRouteProtoType\x12\x07\n\x03\x41NY\x10\x00\x12\n\n\x06\x44IRECT\x10\x01\x12\t\n\x05LOCAL\x10\x02\x12\n\n\x06KERNEL\x10\x03\x12\x0c\n\x08REDIRECT\x10\x04\x12\x08\n\x04OSPF\x10\x05\x12\t\n\x05OSPF3\x10\x06\x12\x0c\n\x08OSPF_ANY\x10\x07\x12\x07\n\x03RIP\x10\x08\x12\t\n\x05RIPNG\x10\t\x12\x07\n\x03\x42GP\x10\n\x12\n\n\x06STATIC\x10\x0b\x12\x08\n\x04ISIS\x10\x0c\x12\x08\n\x04IGMP\x10\r\x12\r\n\tAGGREGATE\x10\x0e\x12\t\n\x05\x44VMRP\x10\x0f\x12\x07\n\x03PIM\x10\x10\x12\x08\n\x04MSDP\x10\x11\x12\x08\n\x04MPLS\x10\x12\x12\x08\n\x04RSVP\x10\x13\x12\x07\n\x03\x43\x43\x43\x10\x14\x12\x07\n\x03LDP\x10\x15\x12\x07\n\x03VPN\x10\x16\x12\x08\n\x04MVPN\x10\x17\x12\t\n\x05MCAST\x10\x18\x12\t\n\x05L2VPN\x10\x19\x12\t\n\x05L2CKT\x10\x1a\x12\x0e\n\nBGP_STATIC\x10\x1b\x12\x08\n\x04RIFT\x10\x1c\x12\t\n\x05OTHER\x10\x1d\x12\x1b\n\x17L2_LEARNED_HOST_ROUTING\x10\x1e\x62\x06proto3'
   ,
   dependencies=[jnx__addr__pb2.DESCRIPTOR,])
 
@@ -49,8 +49,8 @@ _RETURNCODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=3367,
-  serialized_end=3456,
+  serialized_start=3615,
+  serialized_end=3704,
 )
 _sym_db.RegisterEnumDescriptor(_RETURNCODE)
 
@@ -72,8 +72,8 @@ _ROUTETABLEFORMAT = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=3458,
-  serialized_end=3508,
+  serialized_start=3706,
+  serialized_end=3756,
 )
 _sym_db.RegisterEnumDescriptor(_ROUTETABLEFORMAT)
 
@@ -131,8 +131,8 @@ _ROUTEAFTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=3511,
-  serialized_end=3757,
+  serialized_start=3759,
+  serialized_end=4005,
 )
 _sym_db.RegisterEnumDescriptor(_ROUTEAFTYPE)
 
@@ -162,12 +162,47 @@ _LABELOPERATION = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=3759,
-  serialized_end=3814,
+  serialized_start=4007,
+  serialized_end=4062,
 )
 _sym_db.RegisterEnumDescriptor(_LABELOPERATION)
 
 LabelOperation = enum_type_wrapper.EnumTypeWrapper(_LABELOPERATION)
+_SRTEENLPOPERATIONS = _descriptor.EnumDescriptor(
+  name='SRTEEnlpOperations',
+  full_name='routing.SRTEEnlpOperations',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='SRTE_ENLP_INVALID_VAL', index=0, number=0,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='PUSH_IPV4_EXP_NULL_LABEL', index=1, number=1,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='PUSH_IPV6_EXP_NULL_LABEL', index=2, number=2,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='PUSH_IPV4_OR_IPV6_EXP_NULL_LABEL', index=3, number=3,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='DO_NOT_PUSH_EXPLICIT_NULL_LABEL', index=4, number=4,
+      serialized_options=None,
+      type=None),
+  ],
+  containing_type=None,
+  serialized_options=None,
+  serialized_start=4065,
+  serialized_end=4247,
+)
+_sym_db.RegisterEnumDescriptor(_SRTEENLPOPERATIONS)
+
+SRTEEnlpOperations = enum_type_wrapper.EnumTypeWrapper(_SRTEENLPOPERATIONS)
 _ROUTEPROTOTYPE = _descriptor.EnumDescriptor(
   name='RouteProtoType',
   full_name='routing.RouteProtoType',
@@ -301,8 +336,8 @@ _ROUTEPROTOTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=3817,
-  serialized_end=4188,
+  serialized_start=4250,
+  serialized_end=4621,
 )
 _sym_db.RegisterEnumDescriptor(_ROUTEPROTOTYPE)
 
@@ -328,6 +363,11 @@ NOOP = 0
 POP = 1
 PUSH = 2
 SWAP = 3
+SRTE_ENLP_INVALID_VAL = 0
+PUSH_IPV4_EXP_NULL_LABEL = 1
+PUSH_IPV6_EXP_NULL_LABEL = 2
+PUSH_IPV4_OR_IPV6_EXP_NULL_LABEL = 3
+DO_NOT_PUSH_EXPLICIT_NULL_LABEL = 4
 ANY = 0
 DIRECT = 1
 LOCAL = 2
@@ -1139,6 +1179,99 @@ _SRTEBINDINGSID = _descriptor.Descriptor(
 )
 
 
+_SRTENAME = _descriptor.Descriptor(
+  name='SRTEName',
+  full_name='routing.SRTEName',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='tunnel_name', full_name='routing.SRTEName.tunnel_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1587,
+  serialized_end=1618,
+)
+
+
+_SRTEPRIORITY = _descriptor.Descriptor(
+  name='SRTEPriority',
+  full_name='routing.SRTEPriority',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='srte_priority', full_name='routing.SRTEPriority.srte_priority', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1620,
+  serialized_end=1657,
+)
+
+
+_SRTEENLP = _descriptor.Descriptor(
+  name='SRTEEnlp',
+  full_name='routing.SRTEEnlp',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='srte_enlp', full_name='routing.SRTEEnlp.srte_enlp', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1659,
+  serialized_end=1717,
+)
+
+
 _SRTEADDRESS = _descriptor.Descriptor(
   name='SRTEAddress',
   full_name='routing.SRTEAddress',
@@ -1179,8 +1312,8 @@ _SRTEADDRESS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1588,
-  serialized_end=1734,
+  serialized_start=1720,
+  serialized_end=1866,
 )
 
 
@@ -1212,6 +1345,27 @@ _SRTEROUTEDATA = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='sr_name', full_name='routing.SRTERouteData.sr_name', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='sr_priority', full_name='routing.SRTERouteData.sr_priority', index=4,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='sr_enlp', full_name='routing.SRTERouteData.sr_enlp', index=5,
+      number=7, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1224,8 +1378,8 @@ _SRTEROUTEDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1737,
-  serialized_end=1867,
+  serialized_start=1869,
+  serialized_end=2115,
 )
 
 
@@ -1283,8 +1437,8 @@ _FLOWSPECROUTEDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1869,
-  serialized_end=1995,
+  serialized_start=2117,
+  serialized_end=2243,
 )
 
 
@@ -1324,8 +1478,8 @@ _ADDRESSFAMILYSPECIFICDATA = _descriptor.Descriptor(
       name='RouteDataAf', full_name='routing.AddressFamilySpecificData.RouteDataAf',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1998,
-  serialized_end=2145,
+  serialized_start=2246,
+  serialized_end=2393,
 )
 
 
@@ -1446,8 +1600,8 @@ _FLOWSPECADDRESS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2148,
-  serialized_end=2745,
+  serialized_start=2396,
+  serialized_end=2993,
 )
 
 
@@ -1543,8 +1697,8 @@ _ROUTEPREFIX = _descriptor.Descriptor(
       name='RoutePrefixAf', full_name='routing.RoutePrefix.RoutePrefixAf',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=2748,
-  serialized_end=3229,
+  serialized_start=2996,
+  serialized_end=3477,
 )
 
 
@@ -1591,8 +1745,8 @@ _NETWORKADDRESS = _descriptor.Descriptor(
       name='Af', full_name='routing.NetworkAddress.Af',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=3232,
-  serialized_end=3365,
+  serialized_start=3480,
+  serialized_end=3613,
 )
 
 _RPCSTATUS.fields_by_name['code'].enum_type = _RPCSTATUS_RPCSTATUSCODE
@@ -1635,11 +1789,15 @@ _SRTESEGMENT.oneofs_by_name['SRTEType'].fields.append(
 _SRTESEGMENT.fields_by_name['segment_type1'].containing_oneof = _SRTESEGMENT.oneofs_by_name['SRTEType']
 _SRTESEGMENTLIST.fields_by_name['segments'].message_type = _SRTESEGMENT
 _SRTEBINDINGSID.fields_by_name['binding_sr_id'].message_type = _SIDENTRY
+_SRTEENLP.fields_by_name['srte_enlp'].enum_type = _SRTEENLPOPERATIONS
 _SRTEADDRESS.fields_by_name['destination'].message_type = jnx__addr__pb2._IPADDRESS
 _SRTEADDRESS.fields_by_name['sr_color'].message_type = _SRTECOLOR
 _SRTEADDRESS.fields_by_name['sr_distinguisher'].message_type = _SRTEDISTINGUISHER
 _SRTEROUTEDATA.fields_by_name['binding_sid'].message_type = _SRTEBINDINGSID
 _SRTEROUTEDATA.fields_by_name['segment_lists'].message_type = _SRTESEGMENTLIST
+_SRTEROUTEDATA.fields_by_name['sr_name'].message_type = _SRTENAME
+_SRTEROUTEDATA.fields_by_name['sr_priority'].message_type = _SRTEPRIORITY
+_SRTEROUTEDATA.fields_by_name['sr_enlp'].message_type = _SRTEENLP
 _ADDRESSFAMILYSPECIFICDATA.fields_by_name['srte_policy_data'].message_type = _SRTEROUTEDATA
 _ADDRESSFAMILYSPECIFICDATA.fields_by_name['flowspec_data'].message_type = _FLOWSPECROUTEDATA
 _ADDRESSFAMILYSPECIFICDATA.oneofs_by_name['RouteDataAf'].fields.append(
@@ -1732,6 +1890,9 @@ DESCRIPTOR.message_types_by_name['SRTESegmentList'] = _SRTESEGMENTLIST
 DESCRIPTOR.message_types_by_name['SRTEDistinguisher'] = _SRTEDISTINGUISHER
 DESCRIPTOR.message_types_by_name['SRTEColor'] = _SRTECOLOR
 DESCRIPTOR.message_types_by_name['SRTEBindingSID'] = _SRTEBINDINGSID
+DESCRIPTOR.message_types_by_name['SRTEName'] = _SRTENAME
+DESCRIPTOR.message_types_by_name['SRTEPriority'] = _SRTEPRIORITY
+DESCRIPTOR.message_types_by_name['SRTEEnlp'] = _SRTEENLP
 DESCRIPTOR.message_types_by_name['SRTEAddress'] = _SRTEADDRESS
 DESCRIPTOR.message_types_by_name['SRTERouteData'] = _SRTEROUTEDATA
 DESCRIPTOR.message_types_by_name['FlowspecRouteData'] = _FLOWSPECROUTEDATA
@@ -1743,6 +1904,7 @@ DESCRIPTOR.enum_types_by_name['ReturnCode'] = _RETURNCODE
 DESCRIPTOR.enum_types_by_name['RouteTableFormat'] = _ROUTETABLEFORMAT
 DESCRIPTOR.enum_types_by_name['RouteAfType'] = _ROUTEAFTYPE
 DESCRIPTOR.enum_types_by_name['LabelOperation'] = _LABELOPERATION
+DESCRIPTOR.enum_types_by_name['SRTEEnlpOperations'] = _SRTEENLPOPERATIONS
 DESCRIPTOR.enum_types_by_name['RouteProtoType'] = _ROUTEPROTOTYPE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -1885,6 +2047,27 @@ SRTEBindingSID = _reflection.GeneratedProtocolMessageType('SRTEBindingSID', (_me
   # @@protoc_insertion_point(class_scope:routing.SRTEBindingSID)
   })
 _sym_db.RegisterMessage(SRTEBindingSID)
+
+SRTEName = _reflection.GeneratedProtocolMessageType('SRTEName', (_message.Message,), {
+  'DESCRIPTOR' : _SRTENAME,
+  '__module__' : 'prpd_common_pb2'
+  # @@protoc_insertion_point(class_scope:routing.SRTEName)
+  })
+_sym_db.RegisterMessage(SRTEName)
+
+SRTEPriority = _reflection.GeneratedProtocolMessageType('SRTEPriority', (_message.Message,), {
+  'DESCRIPTOR' : _SRTEPRIORITY,
+  '__module__' : 'prpd_common_pb2'
+  # @@protoc_insertion_point(class_scope:routing.SRTEPriority)
+  })
+_sym_db.RegisterMessage(SRTEPriority)
+
+SRTEEnlp = _reflection.GeneratedProtocolMessageType('SRTEEnlp', (_message.Message,), {
+  'DESCRIPTOR' : _SRTEENLP,
+  '__module__' : 'prpd_common_pb2'
+  # @@protoc_insertion_point(class_scope:routing.SRTEEnlp)
+  })
+_sym_db.RegisterMessage(SRTEEnlp)
 
 SRTEAddress = _reflection.GeneratedProtocolMessageType('SRTEAddress', (_message.Message,), {
   'DESCRIPTOR' : _SRTEADDRESS,
