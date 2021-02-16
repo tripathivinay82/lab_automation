@@ -26,14 +26,26 @@ password = 'MaRtInI'
 
 def vmm_start_config():
     '''
-    This function sill start the VMM and load the configuration
+    This function will start the VMM and load the configuration
     '''
 
-    hostname = str(input("Please Enter The VMM POD Server IP: ")) or "10.51.246.43"
-    userName = str(input("Please Enter The VMM POD Server User Name: ")).strip() or "vinayt"
+    hostname = str(input("Enter The VMM POD Server IP: ")) or "10.51.246.43"
+    userName = str(input("Enter The VMM POD Server User Name: ")).strip() or "vinayt"
     userPass = getpass.getpass() 
-    vmmConfig = str(input("Please Enter The VMM Config File Location and Name: ")) or "/vmm/data/user_disks/vinayt/msft/exr/vmx.conf"
-    vmmCmd = "vmm config " + vmmConfig + " -g vmm-default"
+    vmmIn = int(input("Enter The VMM Config Choice [1->for 8.2X75-D24.11, 2->for 18.2X75-D65.11, 3-> for 20.3X75-D10]: "))
+
+    if vmmIn == 1:
+        vmmConfig = '/vmm/data/user_disks/vinayt/msft/exr/vmx_18.2X75_D24.conf'
+        vmmCmd = "vmm config " + vmmConfig + " -g vmm-default"
+    elif vmmIn == 2:
+        vmmConfig = '/vmm/data/user_disks/vinayt/msft/exr/vmx_18.2X75_D65.conf'
+        vmmCmd = "vmm config " + vmmConfig + " -g vmm-default"
+    elif vmmIn == 3:
+        vmmConfig = '/vmm/data/user_disks/vinayt/msft/exr/vmx_20.3_X75_D10.conf'
+        vmmCmd = "vmm config " + vmmConfig + " -g vmm-default"
+    else:
+        print(f'Oops!! incorret input {vmmIn}.. Available options as 1, 2 or 3')
+
     print(f'Final VMM Config Command: {vmmCmd}')
     
     try:
@@ -273,8 +285,10 @@ def ecmp_over_flex_route(hostname):
     rpc_xml = etree.tostring(rpc, pretty_print=True, encoding='unicode')
     result = jxmlease.parse(rpc_xml)
 
-    static_route = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['name']))
-    next_hops = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['next-hop']))
+    #static_route = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['name']))
+    #next_hops = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance']['routing-options']['static']['route']['next-hop']))
+    static_route = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance'][0]['routing-options']['static']['route']['name']))
+    next_hops = re.findall(r'\d+.\d+.\d+.\d+',str(result['configuration']['routing-instances']['instance'][0]['routing-options']['static']['route']['next-hop']))
 
     # Collect data related to static route and their NH
     rpc=dev.rpc.get_route_information(destination=static_route,table='vpnA.inet',extensive=True,active_path=True,)
@@ -503,7 +517,7 @@ def setup_private_link(hostname):
         print("%s: Error - Authentication failure!" % hostname)
         return False
 
-    return True
+    return True 
 
 
 def config_change(hostname):
@@ -556,6 +570,32 @@ def reboot_router(hostname):
         print(err)
         return False
 
+def private_link_check(hostname):
+    '''
+    Verify Private Link Connectivity 
+    '''
+
+    username = 'regress'
+    password = 'MaRtInI'
+
+    print(f"Checking Private Link Connectivity hostname {hostname}")
+
+    try:
+        with Device(host=hostname, user=username, password=password, normalize=True) as dev:
+            # verify ping between CE and Server over Private Links works
+            pr = dev.rpc.cli("ping 14.200.1.1 source 13.200.1.1 routing-instance PrivateLink count 5 rapid")
+            out = etree.tostring(pr).decode('ascii').split('\n')
+            for i in out:
+                if i == '5 packets transmitted, 5 packets received, 0% packet loss':
+                    return True
+    except ConnectError as err:
+        print(err)
+        return False
+
+    # verify ping between CE and Server over Private Links works
+    print('Private Link Customer Reachability Failed!! Please investigate..')
+    return False
+
 def main():
     '''
     This is the main function...More details to follow
@@ -607,7 +647,28 @@ def main():
         time.sleep(600)
     else:
         print('VM creation skipped as per User Input')
-        router_dict={'r1_re0': '10.49.172.186', 'r2_re0': '10.49.172.183', 'r3_re0': '10.49.172.180', 'r4_re0': '10.49.172.178', 'r5_re0': '10.49.172.175'}
+        router_dict={'r1_re0': '10.49.108.206', 'r2_re0': '10.49.108.159', 'r3_re0': '10.49.108.132', 'r4_re0': '10.49.107.223', 'r5_re0': '10.49.107.220'}
+        print(f'Using These routers for further processing: {router_dict}')
+        print()
+        isVmRbt = str(input("Is VM reboot needed? [Yes/No]: ")) or "No"
+        if isVmRbt.lower() == 'yes':
+            #Verify Router Reboot 
+            time_start = time.time()
+            with multiprocessing.Pool(processes=NUM_PROCESSES) as process_pool:
+                retVal=process_pool.map(reboot_router, router_dict.values())
+                process_pool.close()
+                process_pool.join()
+            print(f"retVal {retVal}")
+            print("Reboot Function: Multiprocessing Finished in %f sec." % (time.time() - time_start))
+
+            if 'False' not in retVal:
+                print("Router Reboot Success..")
+            else:
+                print("!!!Router Reboot Failed..Please debug")
+                return False  
+
+            print("Lets Wait for 10 minutes for VMs to get stablize post reboot..")
+            time.sleep(600)
 
     #Verify Router State and configuration 
     time_start = time.time()
@@ -652,14 +713,19 @@ def main():
         else:
             print("Oops!!Flex Route programming failed!..")
         # Verify Flex Route
-        #if ecmp_over_flex_route(router_dict['r2_re0']):
-        #    print("R2: RE/Kernel/PFE: Flex Route Verification Successful!!")
-        #else:
-        #    print("Oops!!R2: Flex Route verification failed!..")
+        if ecmp_over_flex_route(router_dict['r2_re0']):
+            print("R2: RE/Kernel/PFE: Flex Route Verification Successful!!")
+        else:
+            print("Oops!!R2: Flex Route verification failed!..")
     elif isPl == 'Yes' or isPl == 'yes':
         # Configure Private Link from controller
         if setup_private_link(router_dict['r2_re0']) and setup_private_link(router_dict['r4_re0']):
             print("Private Link programming Successful!!")
+            # Verify private link reachablity
+            if private_link_check(router_dict['r1_re0']):
+                print("Private Link Reachability Test Successful!!")
+            else:
+                print("Oops!!Private Link Reachability Test Failed..")
         else:
             print("Oops!!Private Link programming failed!..")
 
