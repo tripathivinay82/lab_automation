@@ -26,7 +26,7 @@ password = 'MaRtInI'
 
 def vmm_start_config():
     '''
-    This function will start the VMM and load the configuration
+    This function will start the VMM and load the configurations
     '''
 
     hostname = str(input("Enter The VMM POD Server IP: ")) or "10.51.246.43"
